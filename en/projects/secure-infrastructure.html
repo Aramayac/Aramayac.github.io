@@ -60,6 +60,23 @@
   <h2 class="label">Results</h2>
   <ul class="cs-res"><li>Firewall failover measured between 3 and 5 seconds.</li><li>Port scan detected in 5 s and attacker blocked in 6 s.</li><li>Only 3 ports exposed after the audit.</li><li>Zero replication failures between the two domain controllers.</li><li>Zabbix alerting tested all the way to the inbox.</li></ul>
 </div></section>
+<section class="cs-sec"><div class="wrap">
+  <h2 class="label">Proof in screenshots</h2>
+  <p class="cs-hint">Click a screenshot to enlarge it.</p>
+  <div class="cs-shots"><figure class="tall"><button type="button" class="zoom" data-src="../../assets/cases/pfe-topologie.png" aria-label="Enlarge screenshot"><img src="../../assets/cases/pfe-topologie.png" alt="Actual GNS3 topology: WAN router, pfSense MASTER/BACKUP cluster joined by the SYNC link, DMZ, ADMIN and USERS switches, DC1/DC2 domain controllers and monitoring server." loading="lazy"></button><figcaption>Actual GNS3 topology: WAN router, pfSense MASTER/BACKUP cluster joined by the SYNC link, DMZ, ADMIN and USERS switches, DC1/DC2 domain controllers and monitoring server.</figcaption></figure><figure class=""><button type="button" class="zoom" data-src="../../assets/cases/pfe-carp.jpg" aria-label="Enlarge screenshot"><img src="../../assets/cases/pfe-carp.jpg" alt="pfSense: all 7 CARP virtual addresses (WAN, DMZ, LAN_ADMIN and 4 business VLANs) in MASTER state, every interface up." loading="lazy"></button><figcaption>pfSense: all 7 CARP virtual addresses (WAN, DMZ, LAN_ADMIN and 4 business VLANs) in MASTER state, every interface up.</figcaption></figure><figure class=""><button type="button" class="zoom" data-src="../../assets/cases/pfe-suricata.jpg" aria-label="Enlarge screenshot"><img src="../../assets/cases/pfe-suricata.jpg" alt="Suricata: external SYN scan caught by custom rule 9000001 and blocked (red rows = dropped packets)." loading="lazy"></button><figcaption>Suricata: external SYN scan caught by custom rule 9000001 and blocked (red rows = dropped packets).</figcaption></figure><figure class="wide"><button type="button" class="zoom" data-src="../../assets/cases/pfe-zabbix.jpg" aria-label="Enlarge screenshot"><img src="../../assets/cases/pfe-zabbix.jpg" alt="Zabbix 7.0: all 9 monitored hosts available, via agent (Windows, Linux) or SNMP (pfSense, Cisco switches)." loading="lazy"></button><figcaption>Zabbix 7.0: all 9 monitored hosts available, via agent (Windows, Linux) or SNMP (pfSense, Cisco switches).</figcaption></figure></div>
+</div></section>
+<script>
+document.querySelectorAll('.cs-shots .zoom').forEach(b => b.addEventListener('click', () => {
+  const cap = b.nextElementSibling.textContent, lb = document.createElement('div');
+  lb.className = 'lb'; lb.setAttribute('role','dialog'); lb.setAttribute('aria-modal','true');
+  lb.innerHTML = '<button class="x" type="button" aria-label="Close">×</button><figure><img alt=""><figcaption></figcaption></figure>';
+  lb.querySelector('img').src = b.dataset.src; lb.querySelector('img').alt = cap; lb.querySelector('figcaption').textContent = cap;
+  const close = () => { lb.remove(); document.removeEventListener('keydown', k); b.focus(); };
+  const k = ev => { if (ev.key === 'Escape') close(); };
+  lb.addEventListener('click', ev => { if (ev.target === lb || ev.target.closest('.x')) close(); });
+  document.addEventListener('keydown', k); document.body.append(lb); lb.querySelector('.x').focus();
+}));
+</script>
 <section class="cs-sec"><div class="wrap cs-two">
   <h2 class="label">Tools</h2><p class="cs-stack">pfSense CE, Suricata 7, Windows Server (AD DS, DNS, GPO), Debian 13, Nginx, Postfix, Dovecot, Zabbix 7.0, Cisco IOS (c3725, c7200), GNS3, VMware Workstation Pro, nmap, OWASP ZAP, Nikto, PowerShell, Bash</p>
 </div></section>

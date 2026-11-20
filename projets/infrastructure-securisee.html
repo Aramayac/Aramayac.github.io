@@ -60,6 +60,23 @@
   <h2 class="label">Résultats</h2>
   <ul class="cs-res"><li>Bascule du pare-feu mesurée entre 3 et 5 secondes.</li><li>Balayage de ports détecté en 5 s et attaquant bloqué en 6 s.</li><li>Seulement 3 ports exposés après l&#x27;audit.</li><li>0 échec de réplication entre les deux contrôleurs.</li><li>Chaîne d&#x27;alerte Zabbix validée jusqu&#x27;à la boîte mail.</li></ul>
 </div></section>
+<section class="cs-sec"><div class="wrap">
+  <h2 class="label">Preuves en images</h2>
+  <p class="cs-hint">Cliquez sur une capture pour l'agrandir.</p>
+  <div class="cs-shots"><figure class="tall"><button type="button" class="zoom" data-src="../assets/cases/pfe-topologie.png" aria-label="Agrandir la capture"><img src="../assets/cases/pfe-topologie.png" alt="Topologie GNS3 réelle : routeur WAN, cluster pfSense MASTER/BACKUP relié par le lien SYNC, commutateurs DMZ, ADMIN et USERS, contrôleurs DC1/DC2 et serveur de supervision." loading="lazy"></button><figcaption>Topologie GNS3 réelle : routeur WAN, cluster pfSense MASTER/BACKUP relié par le lien SYNC, commutateurs DMZ, ADMIN et USERS, contrôleurs DC1/DC2 et serveur de supervision.</figcaption></figure><figure class=""><button type="button" class="zoom" data-src="../assets/cases/pfe-carp.jpg" aria-label="Agrandir la capture"><img src="../assets/cases/pfe-carp.jpg" alt="pfSense : les 7 adresses virtuelles CARP (WAN, DMZ, LAN_ADMIN et 4 VLAN métiers) en état MASTER, toutes les interfaces actives." loading="lazy"></button><figcaption>pfSense : les 7 adresses virtuelles CARP (WAN, DMZ, LAN_ADMIN et 4 VLAN métiers) en état MASTER, toutes les interfaces actives.</figcaption></figure><figure class=""><button type="button" class="zoom" data-src="../assets/cases/pfe-suricata.jpg" aria-label="Agrandir la capture"><img src="../assets/cases/pfe-suricata.jpg" alt="Suricata : balayage SYN venu de l&#x27;extérieur, détecté par la règle maison 9000001 et bloqué (lignes rouges = paquets rejetés)." loading="lazy"></button><figcaption>Suricata : balayage SYN venu de l&#x27;extérieur, détecté par la règle maison 9000001 et bloqué (lignes rouges = paquets rejetés).</figcaption></figure><figure class="wide"><button type="button" class="zoom" data-src="../assets/cases/pfe-zabbix.jpg" aria-label="Agrandir la capture"><img src="../assets/cases/pfe-zabbix.jpg" alt="Zabbix 7.0 : les 9 hôtes supervisés et disponibles, par agent (Windows, Linux) ou par SNMP (pfSense, commutateurs Cisco)." loading="lazy"></button><figcaption>Zabbix 7.0 : les 9 hôtes supervisés et disponibles, par agent (Windows, Linux) ou par SNMP (pfSense, commutateurs Cisco).</figcaption></figure></div>
+</div></section>
+<script>
+document.querySelectorAll('.cs-shots .zoom').forEach(b => b.addEventListener('click', () => {
+  const cap = b.nextElementSibling.textContent, lb = document.createElement('div');
+  lb.className = 'lb'; lb.setAttribute('role','dialog'); lb.setAttribute('aria-modal','true');
+  lb.innerHTML = '<button class="x" type="button" aria-label="Fermer">×</button><figure><img alt=""><figcaption></figcaption></figure>';
+  lb.querySelector('img').src = b.dataset.src; lb.querySelector('img').alt = cap; lb.querySelector('figcaption').textContent = cap;
+  const close = () => { lb.remove(); document.removeEventListener('keydown', k); b.focus(); };
+  const k = ev => { if (ev.key === 'Escape') close(); };
+  lb.addEventListener('click', ev => { if (ev.target === lb || ev.target.closest('.x')) close(); });
+  document.addEventListener('keydown', k); document.body.append(lb); lb.querySelector('.x').focus();
+}));
+</script>
 <section class="cs-sec"><div class="wrap cs-two">
   <h2 class="label">Outils</h2><p class="cs-stack">pfSense CE, Suricata 7, Windows Server (AD DS, DNS, GPO), Debian 13, Nginx, Postfix, Dovecot, Zabbix 7.0, Cisco IOS (c3725, c7200), GNS3, VMware Workstation Pro, nmap, OWASP ZAP, Nikto, PowerShell, Bash</p>
 </div></section>

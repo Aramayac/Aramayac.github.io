@@ -356,3 +356,18 @@ line.dg-atk{animation:dash 1s linear infinite}
 .q figcaption b{display:block}
 .q figcaption span{font-size:.9rem;color:var(--ink-2)}
 html[lang="en"] .headline{font-size:clamp(3.6rem,11vw,9rem)}
+/* case-study screenshots */
+.cs-hint{color:var(--ink-2);font-size:.9rem;margin-top:.4rem}
+.cs-shots{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+.cs-shots figure{display:flex;flex-direction:column;min-width:0}
+.cs-shots .tall{grid-row:span 2}
+.cs-shots .wide{grid-column:1/-1}
+.cs-shots .zoom{display:block;padding:0;border:0;background:#fff;cursor:zoom-in;overflow:hidden;width:100%}
+.cs-shots .zoom img{width:100%;height:auto;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.cs-shots .zoom:hover img{transform:scale(1.02)}
+.cs-shots .zoom:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.cs-shots figcaption{border-top:3px solid var(--orange)}
+.lb img{max-width:100%;height:auto;object-fit:contain}
+@media (max-width:760px){.cs-shots{grid-template-columns:minmax(0,1fr)}.cs-shots .tall{grid-row:auto}}
+@media (max-width:480px){.top .wrap{gap:.5rem}.brand{font-size:1.25rem;gap:.4rem}.brand i{width:9px;height:9px}.top-r{gap:.4rem}.lang{padding:.42rem .5rem;font-size:.78rem}.hire{padding:.5rem .7rem;font-size:.82rem}}
+@media (max-width:350px){.brand{font-size:1.08rem}.brand i{display:none}.hire{padding:.48rem .55rem}.cs-hero h1{font-size:2.6rem}}
