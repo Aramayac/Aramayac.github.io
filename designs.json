@@ -8,12 +8,28 @@
     "year": "2026"
   },
   {
-    "image": "designs/faire-part-mariage.jpg",
-    "title": "Faire-part de mariage",
-    "title_en": "Wedding invitation",
-    "cat": "Affiche",
-    "client": "Commande privée",
+    "image": "designs/mali-horizon-tshirt.jpg",
+    "title": "Mali Horizon : logo appliqué sur textile",
+    "title_en": "Mali Horizon: logo on apparel",
+    "cat": "Identité visuelle",
+    "client": "Mali Horizon",
     "year": "2026"
+  },
+  {
+    "image": "designs/flyer-mamys-dishes.jpg",
+    "title": "Flyer Mamy's Dishes, restauration",
+    "title_en": "Mamy's Dishes restaurant flyer",
+    "cat": "Flyer",
+    "client": "Mamy's Dishes",
+    "year": ""
+  },
+  {
+    "image": "designs/flyer-arama-bazin.jpg",
+    "title": "Flyer Arama Bazin, tissus",
+    "title_en": "Arama Bazin fabric shop flyer",
+    "cat": "Flyer",
+    "client": "Arama Bazin",
+    "year": ""
   },
   {
     "image": "designs/flyer-by-mounas.jpg",
@@ -22,6 +38,14 @@
     "cat": "Flyer",
     "client": "By Mouna's",
     "year": ""
+  },
+  {
+    "image": "designs/faire-part-mariage.jpg",
+    "title": "Faire-part de mariage",
+    "title_en": "Wedding invitation",
+    "cat": "Affiche",
+    "client": "Commande privée",
+    "year": "2026"
   },
   {
     "image": "designs/logo-morike-service.jpg",
@@ -53,6 +77,22 @@
     "title_en": "Arama Design logo",
     "cat": "Logo",
     "client": "Arama Design",
+    "year": "2026"
+  },
+  {
+    "image": "designs/affiche-anniversaire-boron.jpg",
+    "title": "Affiche d'anniversaire, style sport",
+    "title_en": "Birthday poster, sports style",
+    "cat": "Affiche",
+    "client": "Commande privée",
+    "year": "2026"
+  },
+  {
+    "image": "designs/affiche-anniversaire-lagare.jpg",
+    "title": "Affiche d'anniversaire, style éditorial",
+    "title_en": "Birthday poster, editorial style",
+    "cat": "Affiche",
+    "client": "Commande privée",
     "year": "2026"
   },
   {

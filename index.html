@@ -354,8 +354,8 @@ fetch(BASE+'testimonials.json', {cache:'no-cache'}).then(r=>r.ok?r.json():[]).ca
   const f = $('#cform'); if (!f) return;
   const st = $('#f-status'), btn = $('#f-send');
   const T = LANG === 'en'
-    ? {miss:'Please fill in your name, a valid email and a message.', send:'Sending…', ok:'Thank you, your message has been sent. I will reply within 24 hours.', err:'Sending failed. Please email me directly at yacoubaarama12@gmail.com.', subj:'New message from the portfolio'}
-    : {miss:'Indiquez votre nom, un e-mail valide et un message.', send:'Envoi…', ok:'Merci, votre message est envoyé. Je vous réponds sous 24 heures.', err:'L\'envoi a échoué. Écrivez-moi directement à yacoubaarama12@gmail.com.', subj:'Nouveau message depuis le portfolio'};
+    ? {miss:'Please fill in your name, a valid email and a message.', send:'Sending…', ok:'Thank you, your message has been sent. I will reply within 24 hours.', err:'Sending failed. Please email me directly at <a href="mailto:yacoubaarama12@gmail.com">yacoubaarama12@gmail.com</a>.', subj:'New message from the portfolio'}
+    : {miss:'Indiquez votre nom, un e-mail valide et un message.', send:'Envoi…', ok:'Merci, votre message est envoyé. Je vous réponds sous 24 heures.', err:'L\'envoi a échoué. Écrivez-moi directement à <a href="mailto:yacoubaarama12@gmail.com">yacoubaarama12@gmail.com</a>.', subj:'Nouveau message depuis le portfolio'};
   f.addEventListener('submit', async e => {
     e.preventDefault();
     const d = Object.fromEntries(new FormData(f).entries());
@@ -369,9 +369,25 @@ fetch(BASE+'testimonials.json', {cache:'no-cache'}).then(r=>r.ok?r.json():[]).ca
       if (!r.ok || String(j.success) === 'false') throw new Error(j.message || 'fail');
       f.reset(); st.textContent = T.ok; st.className = 'cmsg ok';
       if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({path:'contact-form-sent', title:'Formulaire envoyé', event:true});
-    } catch(err){ st.textContent = T.err; st.className = 'cmsg err'; }
+    } catch(err){
+      // Fallback: classic form POST (not affected by browser shields blocking cross-site fetch)
+      try {
+        st.textContent = T.send; st.className = 'cmsg';
+        const add = (n, v) => { let i = f.querySelector(`input[type=hidden][name="${n}"]`); if (!i){ i = document.createElement('input'); i.type = 'hidden'; i.name = n; f.append(i); } i.value = v; };
+        add('_subject', `${T.subj} : ${d.topic} (${d.name})`); add('_next', location.origin + location.pathname + '?envoye=1#contact');
+        add('_captcha', 'false'); add('_template', 'table'); add('_replyto', d.email);
+        f.action = 'https://formsubmit.co/yacoubaarama12@gmail.com'; f.method = 'POST';
+        HTMLFormElement.prototype.submit.call(f); return;
+      } catch(e2){ st.innerHTML = T.err; st.className = 'cmsg err'; }
+    }
     btn.disabled = false;
   });
+  if (new URLSearchParams(location.search).get('envoye')){
+    st.textContent = T.ok; st.className = 'cmsg ok';
+    history.replaceState(null, '', location.pathname + '#contact');
+    setTimeout(() => { const c = document.getElementById('contact'); if (c) c.scrollIntoView(); }, 300);
+    if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({path:'contact-form-sent', title:'Formulaire envoyé', event:true});
+  }
 })();
 
 /* ===== motion ===== */
