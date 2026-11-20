@@ -478,3 +478,20 @@ html[lang="en"] .headline{font-size:clamp(3.6rem,11vw,9rem)}
 .nf-log{margin-top:2.4rem;background:var(--ink);color:#D6D6DB;font:500 .82rem/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:1rem 1.1rem;max-width:560px;overflow-x:auto;white-space:pre-wrap}
 .nf-log b{color:#FF7A6B;font-weight:600}
 @media (max-width:360px){#labo h2.display{font-size:2.45rem}}
+/* certifications */
+.certs{margin-top:clamp(3rem,6vw,4.5rem);border-top:2px solid var(--ink);padding-top:1.4rem}
+.certs h3.display{font-size:clamp(2rem,4vw,3rem);line-height:.95}
+.cert-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1.4rem}
+.cert{display:flex;flex-direction:column;text-decoration:none;background:var(--paper);border:1px solid var(--rule);transition:transform .25s,box-shadow .25s,border-color .25s}
+.cert img{width:100%;height:auto;aspect-ratio:900/610;object-fit:cover;border-bottom:3px solid var(--cobalt)}
+.cert-b{display:grid;gap:.3rem;padding:.9rem 1rem 1rem}
+.cert small{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.cert b{font-weight:700;line-height:1.25}
+.cert span span,.cert-b>span{font-size:.88rem;color:var(--ink-2)}
+.cert em{font-style:normal;font-weight:700;font-size:.88rem;color:var(--cobalt);margin-top:.3rem}
+.cert:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(17,17,20,.08);border-color:var(--ink)}
+.cert:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.facts dd a{text-decoration:none;border-bottom:1px solid var(--rule)}
+.facts dd a:hover{border-color:var(--orange)}
+@media (max-width:860px){.cert-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media (max-width:560px){.cert-grid{grid-template-columns:minmax(0,1fr)}}
