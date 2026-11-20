@@ -5,7 +5,9 @@
     "title_en": "Arama Design: logo variations",
     "cat": "Identité visuelle",
     "client": "Arama Design",
-    "year": "2026"
+    "year": "2026",
+    "w": 1800,
+    "h": 1170
   },
   {
     "image": "designs/mali-horizon-tshirt.jpg",
@@ -13,7 +15,9 @@
     "title_en": "Mali Horizon: logo on apparel",
     "cat": "Identité visuelle",
     "client": "Mali Horizon",
-    "year": "2026"
+    "year": "2026",
+    "w": 1400,
+    "h": 1750
   },
   {
     "image": "designs/flyer-mamys-dishes.jpg",
@@ -21,7 +25,9 @@
     "title_en": "Mamy's Dishes restaurant flyer",
     "cat": "Flyer",
     "client": "Mamy's Dishes",
-    "year": ""
+    "year": "",
+    "w": 1500,
+    "h": 2000
   },
   {
     "image": "designs/flyer-arama-bazin.jpg",
@@ -29,7 +35,9 @@
     "title_en": "Arama Bazin fabric shop flyer",
     "cat": "Flyer",
     "client": "Arama Bazin",
-    "year": ""
+    "year": "",
+    "w": 1500,
+    "h": 2121
   },
   {
     "image": "designs/flyer-by-mounas.jpg",
@@ -37,7 +45,9 @@
     "title_en": "By Mouna's make-up flyer",
     "cat": "Flyer",
     "client": "By Mouna's",
-    "year": ""
+    "year": "",
+    "w": 1500,
+    "h": 2000
   },
   {
     "image": "designs/faire-part-mariage.jpg",
@@ -45,7 +55,9 @@
     "title_en": "Wedding invitation",
     "cat": "Affiche",
     "client": "Commande privée",
-    "year": "2026"
+    "year": "2026",
+    "w": 1500,
+    "h": 2005
   },
   {
     "image": "designs/logo-morike-service.jpg",
@@ -53,7 +65,9 @@
     "title_en": "Morike Service logo",
     "cat": "Logo",
     "client": "Morike Service",
-    "year": ""
+    "year": "",
+    "w": 1400,
+    "h": 1400
   },
   {
     "image": "designs/logo-glacio.jpg",
@@ -61,7 +75,9 @@
     "title_en": "Glacio logo",
     "cat": "Logo",
     "client": "Glacio",
-    "year": ""
+    "year": "",
+    "w": 1400,
+    "h": 1400
   },
   {
     "image": "designs/logo-ideal-juice.jpg",
@@ -69,7 +85,9 @@
     "title_en": "Idéal Juice logo",
     "cat": "Logo",
     "client": "Idéal Juice",
-    "year": ""
+    "year": "",
+    "w": 1100,
+    "h": 1100
   },
   {
     "image": "designs/logo-arama-design.jpg",
@@ -77,7 +95,9 @@
     "title_en": "Arama Design logo",
     "cat": "Logo",
     "client": "Arama Design",
-    "year": "2026"
+    "year": "2026",
+    "w": 1080,
+    "h": 1080
   },
   {
     "image": "designs/affiche-anniversaire-boron.jpg",
@@ -85,7 +105,9 @@
     "title_en": "Birthday poster, sports style",
     "cat": "Affiche",
     "client": "Commande privée",
-    "year": "2026"
+    "year": "2026",
+    "w": 1400,
+    "h": 2100
   },
   {
     "image": "designs/affiche-anniversaire-lagare.jpg",
@@ -93,7 +115,9 @@
     "title_en": "Birthday poster, editorial style",
     "cat": "Affiche",
     "client": "Commande privée",
-    "year": "2026"
+    "year": "2026",
+    "w": 1500,
+    "h": 2123
   },
   {
     "image": "designs/isi-km-2-mwogfi5e.jpg",
@@ -101,7 +125,9 @@
     "cat": "Affiche",
     "client": "",
     "year": "",
-    "title_en": "ISI KM 2"
+    "title_en": "ISI KM 2",
+    "w": 1272,
+    "h": 1800
   },
   {
     "image": "designs/logo-mali-horizon.png",
@@ -109,7 +135,9 @@
     "cat": "Logo",
     "client": "",
     "year": "",
-    "title_en": "Mali Horizon logo"
+    "title_en": "Mali Horizon logo",
+    "w": 1200,
+    "h": 1200
   },
   {
     "image": "designs/isi-km.jpg",
@@ -117,6 +145,8 @@
     "cat": "Identité visuelle",
     "client": "",
     "year": "",
-    "title_en": "ISI KM"
+    "title_en": "ISI KM",
+    "w": 1080,
+    "h": 1080
   }
 ]

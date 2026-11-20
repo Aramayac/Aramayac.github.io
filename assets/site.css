@@ -433,7 +433,7 @@ html[lang="en"] .headline{font-size:clamp(3.6rem,11vw,9rem)}
 .lab-svg .atk{font:700 12.5px var(--f-body);fill:#FF6B5B;opacity:0;transition:opacity .3s}
 .lab-svg .atk.on{opacity:1}
 .lab-panel{background:var(--paper);color:var(--ink);padding:clamp(1.1rem,2vw,1.5rem);min-width:0}
-.lab-panel .kind{font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);margin:0}
+.lab-panel .kind{font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#B93A0E;margin:0}
 .lab-panel h3{font-family:var(--f-display);font-weight:900;text-transform:uppercase;font-size:clamp(1.9rem,3vw,2.5rem);line-height:.95;margin:.45rem 0 .9rem;overflow-wrap:anywhere}
 .lab-panel p{margin:0 0 .8rem;color:var(--ink-2)}
 .lab-panel dl{margin:0 0 .9rem;border-top:2px solid var(--ink)}
@@ -495,3 +495,30 @@ html[lang="en"] .headline{font-size:clamp(3.6rem,11vw,9rem)}
 .facts dd a:hover{border-color:var(--orange)}
 @media (max-width:860px){.cert-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
 @media (max-width:560px){.cert-grid{grid-template-columns:minmax(0,1fr)}}
+/* Arama Design offers */
+.studio .mark-img{width:48px;height:48px;display:block}
+.offers{margin-top:clamp(3rem,6vw,4.5rem);border-top:2px solid var(--ink);padding-top:1.4rem}
+.offers-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem 2rem;align-items:end}
+.offers-top h3.display{font-size:clamp(2rem,4vw,3rem);line-height:.95}
+.offers-top p{color:var(--ink-2);max-width:52ch}
+.offer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1.6rem}
+.offer{background:var(--paper);border:1px solid var(--rule);padding:1.3rem 1.2rem 1.2rem;display:flex;flex-direction:column;gap:.7rem;transition:border-color .25s,transform .25s}
+.offer:hover{border-color:var(--ink);transform:translateY(-3px)}
+.offer-n{font-family:var(--f-display);font-weight:900;font-size:1rem;color:#B93A0E;letter-spacing:.04em}
+.offer h4{font-family:var(--f-display);font-weight:800;text-transform:uppercase;font-size:clamp(1.45rem,2.2vw,1.8rem);line-height:.98;margin:0}
+.offer ul{list-style:none;margin:0;padding:0;display:grid;gap:.45rem;flex:1}
+.offer li{padding-left:1.3rem;position:relative;color:var(--ink-2);font-size:.95rem}
+.offer li::before{content:"";position:absolute;left:0;top:.6em;width:7px;height:7px;background:var(--orange)}
+.offer a{align-self:flex-start;margin-top:.4rem;font-weight:700;text-decoration:none;background:var(--ink);color:var(--paper);padding:.65rem .95rem;transition:background .2s}
+.offer a:hover{background:var(--orange)}
+.offer a:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.steps{margin-top:1.6rem}
+.steps ol{list-style:none;margin:.8rem 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--rule)}
+.steps li{padding:1rem 1rem 0 0;display:grid;gap:.3rem;counter-increment:st}
+.steps li b{font-weight:700}
+.steps li b::before{content:counter(st,decimal-leading-zero) "  ";color:var(--orange);font-family:var(--f-display);font-weight:900}
+.steps li span{color:var(--ink-2);font-size:.92rem}
+.steps ol{counter-reset:st}
+@media (max-width:900px){.offer-grid{grid-template-columns:minmax(0,1fr)}.offers-top{grid-template-columns:minmax(0,1fr)}.steps ol{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:460px){.steps ol{grid-template-columns:minmax(0,1fr)}}
+.offer ul{align-content:start}.steps li{align-content:start}

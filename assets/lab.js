@@ -104,12 +104,12 @@
   const label = (n) => {
     if (n.type === 'cloud') return '';
     const [w,h] = box[n.type];
-    if (n.lab === 'r') return `<text class="t1" x="${n.x + w/2 + 10}" y="${n.y + 1}">${n.name}</text><text class="t2" x="${n.x + w/2 + 10}" y="${n.y + 16}">${n.sub}</text>`;
+    if (n.lab === 'r') return `<text class="t1" x="${n.x + w/2 + 10}" y="${n.y + 1}">${n.name}</text><text class="t2" x="${n.x + w/2 + 10}" y="${n.y + 16}"> ${n.sub}</text>`;
     const y = n.y + h/2 + 17;
-    return `<text class="t1" x="${n.x}" y="${y}" text-anchor="middle">${n.name}</text><text class="t2" x="${n.x}" y="${y + 14}" text-anchor="middle">${n.sub}</text>`;
+    return `<text class="t1" x="${n.x}" y="${y}" text-anchor="middle">${n.name}</text><text class="t2" x="${n.x}" y="${y + 14}" text-anchor="middle"> ${n.sub}</text>`;
   };
   const nodeSvg = (id) => { const n = N[id], [w,h] = box[n.type];
-    return `<g class="ln" data-id="${id}" tabindex="0" role="button" aria-label="${esc(n.name + ' — ' + t(n.kind))}"><rect class="ring" x="${n.x-w/2-6}" y="${n.y-h/2-6}" width="${w+12}" height="${h+12}"/>${icon(n)}${label(n)}</g>`; };
+    return `<g class="ln" data-id="${id}" tabindex="0" role="button"><rect class="ring" x="${n.x-w/2-6}" y="${n.y-h/2-6}" width="${w+12}" height="${h+12}"/>${icon(n)}${label(n)}</g>`; };
   const zone = (x,w,lab) => `<g class="zone"><rect x="${x}" y="428" width="${w}" height="160"/><text class="tz" x="${x+10}" y="446">${esc(t(lab))}</text></g>`;
   const tag = (id) => { const n = N[id]; return `<g class="tag" id="tag-${id}"><rect x="${n.x-34}" y="${n.y-46}" width="68" height="18"/><text x="${n.x}" y="${n.y-33}" text-anchor="middle"></text></g>`; };
 
