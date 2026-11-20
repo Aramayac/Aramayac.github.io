@@ -661,3 +661,7 @@ html.menu-open .wa-fab{opacity:0;pointer-events:none}
 .more-grid .mp-sys,.more-grid .mp-net{--acc:var(--cobalt)}
 .more-grid .mp-dev{--acc:var(--ink)}
 @media (max-width:640px){.mp-filters{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-inline:-16px;padding:0 16px 4px}.mp-filters::-webkit-scrollbar{display:none}.mp-filters button{flex:none}}
+.sb .chips{list-style:none;margin:.7rem 0 0;padding:0;display:flex;flex-wrap:wrap;gap:.4rem}
+.sb .chips li{font-size:.85rem;font-weight:500;padding:.35rem .6rem;background:var(--paper-2);border:1px solid var(--rule)}
+.sb .sb-note{font-size:.88rem;color:var(--ink-2);margin-top:.8rem}
+.row .cs-link+.cs-link{margin-left:1.2rem}
