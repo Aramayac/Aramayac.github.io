@@ -1,23 +1,82 @@
 [
   {
+    "image": "designs/arama-design-declinaisons.jpg",
+    "title": "Arama Design : déclinaisons du logo",
+    "title_en": "Arama Design: logo variations",
+    "cat": "Identité visuelle",
+    "client": "Arama Design",
+    "year": "2026"
+  },
+  {
+    "image": "designs/faire-part-mariage.jpg",
+    "title": "Faire-part de mariage",
+    "title_en": "Wedding invitation",
+    "cat": "Affiche",
+    "client": "Commande privée",
+    "year": "2026"
+  },
+  {
+    "image": "designs/flyer-by-mounas.jpg",
+    "title": "Flyer By Mouna's, maquillage",
+    "title_en": "By Mouna's make-up flyer",
+    "cat": "Flyer",
+    "client": "By Mouna's",
+    "year": ""
+  },
+  {
+    "image": "designs/logo-morike-service.jpg",
+    "title": "Logo Morike Service",
+    "title_en": "Morike Service logo",
+    "cat": "Logo",
+    "client": "Morike Service",
+    "year": ""
+  },
+  {
+    "image": "designs/logo-glacio.jpg",
+    "title": "Logo Glacio",
+    "title_en": "Glacio logo",
+    "cat": "Logo",
+    "client": "Glacio",
+    "year": ""
+  },
+  {
+    "image": "designs/logo-ideal-juice.jpg",
+    "title": "Logo Idéal Juice",
+    "title_en": "Idéal Juice logo",
+    "cat": "Logo",
+    "client": "Idéal Juice",
+    "year": ""
+  },
+  {
+    "image": "designs/logo-arama-design.jpg",
+    "title": "Logo Arama Design",
+    "title_en": "Arama Design logo",
+    "cat": "Logo",
+    "client": "Arama Design",
+    "year": "2026"
+  },
+  {
     "image": "designs/isi-km-2-mwogfi5e.jpg",
     "title": "ISI KM 2",
     "cat": "Affiche",
     "client": "",
-    "year": ""
+    "year": "",
+    "title_en": "ISI KM 2"
   },
   {
     "image": "designs/logo-mali-horizon.png",
     "title": "Logo Mali Horizon",
     "cat": "Logo",
     "client": "",
-    "year": ""
+    "year": "",
+    "title_en": "Mali Horizon logo"
   },
   {
     "image": "designs/isi-km.jpg",
     "title": "ISI KM",
     "cat": "Identité visuelle",
     "client": "",
-    "year": ""
+    "year": "",
+    "title_en": "ISI KM"
   }
 ]

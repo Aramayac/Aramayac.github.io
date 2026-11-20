@@ -311,6 +311,7 @@ $('#tl').innerHTML = TL.map(([d,t,p,k])=>`<div class="${k||''}"><time>${esc(d)}<
 let designs = [], dcur = 'Tout';
 const CAT_EN = {'Logo':'Logo','Affiche':'Poster','Flyer':'Flyer','Identité visuelle':'Visual identity','Autre':'Other','Tout':'All'};
 const catLabel = c => LANG === 'en' ? (CAT_EN[c] || c) : c;
+const ttl = d => (LANG === 'en' && d.title_en) ? d.title_en : d.title;
 function renderFilters(){
   const cats = ['Tout', ...new Set(designs.map(d=>d.cat))];
   $('#dfilters').innerHTML = designs.length>1 ? cats.map(c=>`<button class="f" type="button" data-c="${esc(c)}" aria-pressed="${c===dcur}">${esc(catLabel(c))}</button>`).join('') : '';
@@ -323,15 +324,15 @@ function renderGallery(){
   }
   const list = designs.filter(d=>dcur==='Tout'||d.cat===dcur);
   z.innerHTML = `<div class="gallery">${list.map((d,i)=>`<figure class="item" data-i="${designs.indexOf(d)}">
-    <button class="open" type="button" aria-label="Agrandir ${esc(d.title)}"><img src="${esc(BASE+d.image)}" alt="${esc(d.title)}" loading="lazy"></button>
-    <figcaption><b>${esc(d.title)}</b><span>${esc([catLabel(d.cat),d.client,d.year].filter(Boolean).join(' · '))}</span></figcaption></figure>`).join('')}</div>`;
+    <button class="open" type="button" aria-label="Agrandir ${esc(ttl(d))}"><img src="${esc(BASE+d.image)}" alt="${esc(ttl(d))}" loading="lazy"></button>
+    <figcaption><b>${esc(ttl(d))}</b><span>${esc([catLabel(d.cat),d.client,d.year].filter(Boolean).join(' · '))}</span></figcaption></figure>`).join('')}</div>`;
 }
 $('#dfilters').addEventListener('click', e => { const b=e.target.closest('[data-c]'); if(!b) return; dcur=b.dataset.c; renderFilters(); renderGallery(); });
 $('#gallery-zone').addEventListener('click', e => {
   const op = e.target.closest('.open'); if (!op) return;
   const d = designs[+op.closest('.item').dataset.i]; if (!d) return;
-  const lb = document.createElement('div'); lb.className='lb'; lb.setAttribute('role','dialog'); lb.setAttribute('aria-modal','true'); lb.setAttribute('aria-label',d.title);
-  lb.innerHTML = `<button class="x" type="button" aria-label="Fermer">×</button><figure><img src="${esc(BASE+d.image)}" alt="${esc(d.title)}"><figcaption><b>${esc(d.title)}</b><span>${esc([catLabel(d.cat),d.client,d.year].filter(Boolean).join(' · '))}</span></figcaption></figure>`;
+  const lb = document.createElement('div'); lb.className='lb'; lb.setAttribute('role','dialog'); lb.setAttribute('aria-modal','true'); lb.setAttribute('aria-label',ttl(d));
+  lb.innerHTML = `<button class="x" type="button" aria-label="Fermer">×</button><figure><img src="${esc(BASE+d.image)}" alt="${esc(ttl(d))}"><figcaption><b>${esc(ttl(d))}</b><span>${esc([catLabel(d.cat),d.client,d.year].filter(Boolean).join(' · '))}</span></figcaption></figure>`;
   const close = () => { lb.remove(); document.removeEventListener('keydown', onKey); op.focus(); };
   const onKey = ev => { if (ev.key==='Escape') close(); };
   lb.addEventListener('click', ev => { if (ev.target===lb || ev.target.closest('.x')) close(); });
