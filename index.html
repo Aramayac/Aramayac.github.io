@@ -221,6 +221,13 @@ section{padding-block:clamp(4rem,9vw,7.5rem)}
 .links small{display:block;font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
 .links span,.links a{font-weight:500;font-size:1.05rem;overflow-wrap:anywhere}
 @media (max-width:900px){.links{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (max-width:520px){.links{grid-template-columns:1fr}}
+.cvs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1.4rem}
+.cvdl{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.1rem 1.2rem;background:var(--ink);color:var(--paper);text-decoration:none;transition:background .2s,color .2s}
+.cvdl:hover{background:var(--paper);color:var(--ink)}
+.cvdl small{display:block;font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.cvdl b{font-family:var(--f-display);font-weight:800;font-size:clamp(1.4rem,2.6vw,2rem);text-transform:uppercase;line-height:1}
+.cvdl i{font-style:normal;font-size:1.6rem;flex:none;width:2.6rem;height:2.6rem;display:grid;place-items:center;border:2px solid currentColor}
+@media (max-width:640px){.cvs{grid-template-columns:1fr}}
 footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding-block:1.6rem;font-size:.86rem;color:var(--ink-2)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,140%);visibility:hidden;background:var(--ink);color:var(--paper);padding:.75rem 1.1rem;font-size:.92rem;z-index:95;transition:transform .3s,visibility .3s}
 .toast.show{transform:translate(-50%,0);visibility:visible}
@@ -248,7 +255,7 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;
       <p class="intro">Je m'appelle <strong>Yacouba Arama</strong>. Technicien supérieur en cybersécurité et administrateur systèmes et réseaux, j'installe, je sécurise et je surveille des infrastructures. Avec mon studio <strong>Arama Design</strong>, je crée aussi des logos et des affiches.</p>
       <div class="cta">
         <a class="btn btn-ink" href="#travaux">Voir mes travaux <span class="arr" aria-hidden="true">→</span></a>
-        <a class="btn btn-line" href="cv/Yacouba_ARAMA_CV.pdf" download>Télécharger mon CV</a>
+        <a class="btn btn-line" href="#cv">Télécharger mon CV ↓</a>
       </div>
     </div>
     <figure class="portrait">
@@ -361,8 +368,12 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;
   <div class="wrap">
     <p class="label">Contact</p>
     <h2 class="display" style="margin-top:.8rem">Parlons-en.</h2>
-    <p class="intro">Je cherche un stage ou un premier poste en administration systèmes et réseaux, en supervision ou en cybersécurité, à Dakar ou ailleurs en Afrique de l'Ouest. Écrivez-moi et je vous envoie mon CV détaillé.</p>
-    <div class="mail"><a href="mailto:yacoubaarama12@gmail.com?subject=Opportunit%C3%A9%20%E2%80%93%20Yacouba%20Arama" style="text-decoration:none;flex:1;min-width:0"><strong id="email">yacoubaarama12@gmail.com</strong></a><button class="copy" type="button" data-copy="email">Copier l'adresse</button><a class="copy" href="cv/Yacouba_ARAMA_CV.pdf" download style="text-decoration:none;background:var(--paper);color:var(--ink)">Télécharger mon CV</a></div>
+    <p class="intro">Je cherche un stage ou un premier poste en administration systèmes et réseaux, en supervision ou en cybersécurité, à Dakar ou ailleurs en Afrique de l'Ouest. Téléchargez mon CV ci-dessous ou écrivez-moi directement.</p>
+    <div class="mail"><a href="mailto:yacoubaarama12@gmail.com?subject=Opportunit%C3%A9%20%E2%80%93%20Yacouba%20Arama" style="text-decoration:none;flex:1;min-width:0"><strong id="email">yacoubaarama12@gmail.com</strong></a><button class="copy" type="button" data-copy="email">Copier l'adresse</button></div>
+    <div class="cvs" id="cv">
+      <a class="cvdl" href="cv/Yacouba_ARAMA_CV.pdf" download><span><small>CV synthétique · 1 page · PDF</small><b>L'essentiel en un coup d'œil</b></span><i aria-hidden="true">↓</i></a>
+      <a class="cvdl" href="cv/Yacouba_ARAMA_CV_detaille.pdf" download><span><small>CV détaillé · 3 pages · PDF</small><b>Tous les projets et compétences</b></span><i aria-hidden="true">↓</i></a>
+    </div>
     <div class="links">
       <div><small>Téléphone</small><a href="tel:+221787597073" id="tel">+221 78 759 70 73</a></div>
       <div><small>WhatsApp</small><a href="https://wa.me/221787597073" target="_blank" rel="noopener">Écrire sur WhatsApp ↗</a></div>

@@ -16,4 +16,6 @@ Catégories possibles : Logo, Affiche, Flyer, Identité visuelle, Autre.
 
 ## Mettre à jour le CV
 
-Remplacez `cv/Yacouba_ARAMA_CV.pdf` par la nouvelle version, avec le même nom de fichier.
+Remplacez le fichier concerné dans `cv/`, en gardant le même nom :
+- `cv/Yacouba_ARAMA_CV.pdf` : CV synthétique (1 page)
+- `cv/Yacouba_ARAMA_CV_detaille.pdf` : CV détaillé (3 pages)
