@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Notes techniques · Yacouba Arama</title>
+<meta name="description" content="Des notes courtes tirées de mes projets : le principe, la mise en œuvre, les mesures réelles et les pièges rencontrés.">
+<link rel="canonical" href="https://aramayac.github.io/notes/">
+<link rel="alternate" hreflang="fr" href="https://aramayac.github.io/notes/">
+<link rel="alternate" hreflang="en" href="https://aramayac.github.io/en/notes/">
+<meta name="theme-color" content="#EE4E1C">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aramayac.github.io/notes/">
+<meta property="og:title" content="Notes techniques · Yacouba Arama">
+<meta property="og:description" content="Des notes courtes tirées de mes projets : le principe, la mise en œuvre, les mesures réelles et les pièges rencontrés.">
+<meta property="og:image" content="https://aramayac.github.io/assets/og-image.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<script data-goatcounter="https://aramayac.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../"><i aria-hidden="true"></i>Yacouba Arama</a>
+    <nav aria-label="Sections"><a href="../">← Retour au portfolio</a></nav>
+    <div class="top-r"><a class="lang" href="../en/notes/index.html" hreflang="en" aria-label="EN, English version">EN</a><a class="hire" href="../#contact" title="Disponible dès maintenant">Me recruter<span class="dot" aria-hidden="true"></span></a><button class="burger" type="button" aria-expanded="false" aria-controls="mnav" aria-label="Menu"><span></span><span></span></button></div>
+  </div>
+</header>
+<!--mnav--><div class="mnav" id="mnav" hidden><nav aria-label="Menu"><a href="../" style="--i:0"><i>←</i>Accueil</a><a href="../#metier" style="--i:1"><i>01</i>Métier</a><a href="../#labo" style="--i:2"><i>02</i>Labo</a><a href="../#travaux" style="--i:3"><i>03</i>Travaux</a><a href="../#certifications" style="--i:4"><i>04</i>Certifications</a><a href="../#notes" style="--i:5"><i>05</i>Notes</a><a href="../#design" style="--i:6"><i>06</i>Design</a><a href="../#parcours" style="--i:7"><i>07</i>Parcours</a><a href="../#contact" style="--i:8"><i>08</i>Contact</a></nav><div class="mnav-foot"><a href="../cv/Yacouba_ARAMA_CV.pdf" download data-goatcounter-click="cv-menu">Télécharger mon CV ↓</a><a href="https://wa.me/221787597073" target="_blank" rel="noopener" data-goatcounter-click="whatsapp-menu">WhatsApp ↗</a><a href="../en/notes/index.html" hreflang="en">English version</a></div></div><!--/mnav-->
+<script src="../assets/menu.js" defer></script>
+<main class="nt">
+<section class="nt-head"><div class="wrap">
+  <p class="label">Notes techniques</p>
+  <h1 class="display">Ce que j'ai appris en le faisant.</h1>
+  <p class="intro">Des notes courtes tirées de mes projets : le principe, la mise en œuvre, les mesures réelles et les pièges rencontrés.</p>
+</div></section>
+<section class="nt-idx"><div class="wrap"><div class="nt-grid">
+      <a class="nt-card" href="pfsense-carp-haute-disponibilite.html"><span class="nt-n">01</span><span class="nt-tags"><span>pfSense</span><span>CARP</span><span>pfsync</span></span><b>Deux pare-feu pfSense pour une seule passerelle : CARP, pfsync et une bascule mesurée</b><span class="nt-lead">Un pare-feu unique est un point de défaillance unique. Voici comment j&#x27;ai monté un cluster pfSense actif/passif, et surtout comment j&#x27;ai mesuré ce que voit l&#x27;utilisateur quand le maître tombe.</span><em>3 min de lecture →</em></a>
+      <a class="nt-card" href="suricata-regle-balayage-de-ports.html"><span class="nt-n">02</span><span class="nt-tags"><span>Suricata</span><span>IDS/IPS</span><span>pfSense</span></span><b>Une règle Suricata maison pour bloquer un balayage de ports en 6 secondes</b><span class="nt-lead">Le jeu Emerging Threats signale les balayages, mais il ne les bloque pas. J&#x27;ai écrit une règle de seuil, je l&#x27;ai testée en alerte, puis je l&#x27;ai passée en blocage, sur pfSense.</span><em>3 min de lecture →</em></a>
+      <a class="nt-card" href="active-directory-verrouillage-de-compte.html"><span class="nt-n">03</span><span class="nt-tags"><span>Active Directory</span><span>GPO</span><span>PowerShell</span></span><b>Verrouillage de compte Active Directory : le configurer au bon endroit, puis le prouver</b><span class="nt-lead">Une politique de verrouillage protège les comptes contre les attaques par force brute. Encore faut-il qu&#x27;elle s&#x27;applique vraiment : voici où la placer, et comment je l&#x27;ai vérifiée en six commandes.</span><em>3 min de lecture →</em></a>
+</div></div></section>
+</main>
+<footer><div class="wrap"><span>© 2026 Yacouba Arama</span><span>Conception et identité : Arama Design</span></div></footer>
+<script>
+(() => { const bar = document.getElementById('progress'); const f = () => { const h = document.documentElement, m = h.scrollHeight - h.clientHeight; bar.style.transform = `scaleX(${m>0 ? h.scrollTop/m : 0})`; }; addEventListener('scroll', f, {passive:true}); f(); })();
+</script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Une règle Suricata maison pour bloquer un balayage de ports en 6 secondes · Yacouba Arama</title>
+<meta name="description" content="Le jeu Emerging Threats signale les balayages, mais il ne les bloque pas. J&#x27;ai écrit une règle de seuil, je l&#x27;ai testée en alerte, puis je l&#x27;ai passée en blocage, sur pfSense.">
+<link rel="canonical" href="https://aramayac.github.io/notes/suricata-regle-balayage-de-ports.html">
+<link rel="alternate" hreflang="fr" href="https://aramayac.github.io/notes/suricata-regle-balayage-de-ports.html">
+<link rel="alternate" hreflang="en" href="https://aramayac.github.io/en/notes/suricata-port-scan-rule.html">
+<meta name="theme-color" content="#EE4E1C">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aramayac.github.io/notes/suricata-regle-balayage-de-ports.html">
+<meta property="og:title" content="Une règle Suricata maison pour bloquer un balayage de ports en 6 secondes · Yacouba Arama">
+<meta property="og:description" content="Le jeu Emerging Threats signale les balayages, mais il ne les bloque pas. J&#x27;ai écrit une règle de seuil, je l&#x27;ai testée en alerte, puis je l&#x27;ai passée en blocage, sur pfSense.">
+<meta property="og:image" content="https://aramayac.github.io/assets/og-image.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<meta property="article:published_time" content="2026-11-20">
+<script data-goatcounter="https://aramayac.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../"><i aria-hidden="true"></i>Yacouba Arama</a>
+    <nav aria-label="Sections"><a class="back" href="index.html">← Toutes les notes</a></nav>
+    <div class="top-r"><a class="lang" href="../en/notes/suricata-port-scan-rule.html" hreflang="en" aria-label="EN, English version">EN</a><a class="hire" href="../#contact" title="Disponible dès maintenant">Me recruter<span class="dot" aria-hidden="true"></span></a><button class="burger" type="button" aria-expanded="false" aria-controls="mnav" aria-label="Menu"><span></span><span></span></button></div>
+  </div>
+</header>
+<!--mnav--><div class="mnav" id="mnav" hidden><nav aria-label="Menu"><a href="../" style="--i:0"><i>←</i>Accueil</a><a href="../#metier" style="--i:1"><i>01</i>Métier</a><a href="../#labo" style="--i:2"><i>02</i>Labo</a><a href="../#travaux" style="--i:3"><i>03</i>Travaux</a><a href="../#certifications" style="--i:4"><i>04</i>Certifications</a><a href="../#notes" style="--i:5"><i>05</i>Notes</a><a href="../#design" style="--i:6"><i>06</i>Design</a><a href="../#parcours" style="--i:7"><i>07</i>Parcours</a><a href="../#contact" style="--i:8"><i>08</i>Contact</a></nav><div class="mnav-foot"><a href="../cv/Yacouba_ARAMA_CV.pdf" download data-goatcounter-click="cv-menu">Télécharger mon CV ↓</a><a href="https://wa.me/221787597073" target="_blank" rel="noopener" data-goatcounter-click="whatsapp-menu">WhatsApp ↗</a><a href="../en/notes/suricata-port-scan-rule.html" hreflang="en">English version</a></div></div><!--/mnav-->
+<script src="../assets/menu.js" defer></script>
+<main class="nt">
+<article>
+<header class="nt-head"><div class="wrap nt-w">
+  <p class="label"><a href="index.html">Notes techniques</a> · 20 novembre 2026 · 3 min de lecture</p>
+  <h1 class="display">Une règle Suricata maison pour bloquer un balayage de ports en 6 secondes</h1>
+  <p class="intro">Le jeu Emerging Threats signale les balayages, mais il ne les bloque pas. J&#x27;ai écrit une règle de seuil, je l&#x27;ai testée en alerte, puis je l&#x27;ai passée en blocage, sur pfSense.</p>
+  <div class="nt-tags"><span>Suricata</span><span>IDS/IPS</span><span>pfSense</span><span>nmap</span></div>
+</div></header>
+<div class="wrap nt-w nt-body">
+  <aside class="nt-tldr"><b>En bref</b><ul><li>Suricata tourne sur les deux pare-feu, avec trois instances : WAN, DMZ et LAN Utilisateurs.</li><li>La règle 9000001 se déclenche quand une même source envoie 20 paquets SYN en 10 secondes.</li><li>Mesuré : première alerte à 5 s, attaquant bloqué à 6 s.</li></ul></aside>
+  <h2>Le point de départ</h2>
+<p>Suricata 7.0.11 est installé en package sur les deux nœuds pfSense. Le jeu <b>Emerging Threats Open</b> charge environ 22 570 règles, dont la catégorie ET SCAN qui repère les sondes vers les ports de bases de données (3306, 1433, 5432…). Mais ces règles ne font qu&#x27;alerter : un balayage est vu, pas arrêté.</p>
+<h2>Où se place Suricata</h2>
+<p>Trois instances par nœud : <b>WAN</b> (em0), <b>DMZ</b> et <b>LAN_USERS</b> (interface parente em3, celle des VLAN). Le mode retenu est le <em>Legacy Mode</em> : Suricata inspecte une copie des paquets, et pour bloquer, il inscrit l&#x27;adresse de l&#x27;émetteur dans la table pf <code>snort2c</code>.</p>
+<p>Le blocage n&#x27;est activé que sur l&#x27;instance WAN du maître, avec les options <em>Block Offenders</em>, <em>Kill States</em>, blocage de l&#x27;adresse source, et blocage limité aux règles en action <code>drop</code>. Une liste de passage (PASS_LAB) protège l&#x27;infrastructure : pare-feu, DNS externes, réseaux internes, lien pfsync, routeur WAN.</p>
+<aside class="nt-tip"><b>Astuce</b><p>La liste de passage est indispensable : sans elle, une règle trop sensible pourrait bloquer votre propre routeur ou vos DNS, et couper l&#x27;entreprise d&#x27;Internet.</p></aside>
+<h2>La règle</h2>
+<p>Sa logique : <b>une même source, 20 paquets SYN, 10 secondes</b>. Voici cette logique écrite en syntaxe Suricata :</p>
+<pre class="nt-code" data-lang="suricata"><code>drop tcp $EXTERNAL_NET any -&gt; $HOME_NET any (msg:&quot;LAB SCAN SYN rafale depuis exterieur - blocage&quot;; \
+  flags:S,12; threshold: type both, track by_src, count 20, seconds 10; \
+  classtype:attempted-recon; sid:9000001; rev:2;)</code></pre>
+<ul><li><code>flags:S,12</code> ne retient que les paquets SYN, début de toute connexion TCP, comme ceux d&#x27;un <code>nmap -sS</code>.</li><li><code>threshold … track by_src, count 20, seconds 10</code> compte par adresse source : à 20 SYN en 10 secondes, la règle se déclenche.</li><li><code>classtype:attempted-recon</code> classe l&#x27;alerte en « Attempted Information Leak », priorité 2.</li></ul>
+<h2>Tester en deux temps : alerter, puis bloquer</h2>
+<ol><li>Règle en action <code>alert</code>. Depuis la machine Kali (192.168.207.164), lancer un balayage vers l&#x27;adresse publique virtuelle :</li></ol>
+<pre class="nt-code" data-lang="bash"><code>nmap -Pn -sS -T3 --top-ports 100 200.100.10.4</code></pre>
+<p>Résultat : les alertes « LAB SCAN » arrivent à quelques secondes d&#x27;intervalle, avec les alertes ET SCAN (ports 1521, 1433, 5800 à 5820). La règle voit juste, sans rien bloquer.</p>
+<ol start="2"><li>Passer la règle en <code>drop</code>, relancer le même balayage, puis vérifier la table de blocage sur le pare-feu :</li></ol>
+<pre class="nt-code" data-lang="bash"><code>pfctl -t snort2c -T show
+   192.168.207.164</code></pre>
+<figure class="nt-fig"><svg class="nt-svg" viewBox="0 0 640 140" role="img" aria-label="Chronologie : balayage à 0 s, alerte à 5 s, blocage à 6 s">
+<line x1="70" y1="62" x2="610" y2="62" class="nt-l"/><line x1="560" y1="62" x2="610" y2="62" class="nt-l nt-dash"/><circle cx="70" cy="62" r="9" class="nt-k"/><text x="70" y="38" class="nt-t" text-anchor="middle">0 s</text><text x="70" y="96" class="nt-s" text-anchor="middle">nmap -sS</text><circle cx="360" cy="62" r="9" class="nt-a"/><text x="360" y="38" class="nt-t" text-anchor="middle">5 s</text><text x="360" y="96" class="nt-s" text-anchor="middle">Alerte LAB SCAN</text><circle cx="540" cy="62" r="9" class="nt-b"/><text x="540" y="38" class="nt-t" text-anchor="middle">6 s</text><text x="540" y="96" class="nt-s" text-anchor="middle">Kali bloquée</text><text x="610" y="126" class="nt-s" text-anchor="end">ensuite : balayage ralenti, un peu plus de 100 s au total</text></svg></figure>
+<p>Mesuré : première alerte environ <b>5 secondes</b> après le lancement, adresse de Kali <b>bloquée une seconde plus tard</b>. Ralenti par le blocage, le balayage a duré un peu plus de 100 secondes. Le déblocage se fait ensuite depuis l&#x27;onglet <em>Blocks</em>.</p>
+<h2>Pièges et limites</h2>
+<ul><li>La règle compte des <b>paquets SYN</b>, pas des ports distincts : une rafale de connexions légitimes très rapide pourrait la déclencher. D&#x27;où la liste de passage.</li><li>En <em>Legacy Mode</em>, quelques paquets passent avant le blocage, car Suricata travaille sur une copie.</li><li>Pour le trafic sortant, l&#x27;instance WAN ne voit que l&#x27;adresse translatée du pare-feu. Pour attribuer un incident à un poste, il faut l&#x27;instance LAN_USERS, placée avant la NAT.</li><li>Un redémarrage pendant la réécriture des règles n&#x27;en a chargé que 15 186 sur 22 569. Après chaque modification, relire sur chaque nœud le message <em>rules successfully loaded</em>.</li><li>La synchronisation copie la règle vers le secours sans relancer son instance : il faut la redémarrer à la main. La prévention après une bascule n&#x27;a pas été évaluée.</li></ul>
+<h2>Ce que je retiens</h2>
+<p>Une règle de blocage se construit en deux temps : d&#x27;abord en alerte, pour vérifier qu&#x27;elle voit juste, puis en blocage. Et elle n&#x27;est jamais complète sans une liste de passage qui protège ses propres équipements.</p>
+  <p class="nt-src">Source : mon mémoire de Licence 3, « Conception et sécurisation d&#x27;une infrastructure réseau d&#x27;entreprise » (ISI Keur Massar, 2026). Mesures réalisées sur une maquette GNS3 et VMware.</p>
+  <a class="lab-case" href="../projets/infrastructure-securisee.html">Voir le projet complet dans l'étude de cas →</a>
+</div>
+</article>
+<section class="nt-more"><div class="wrap nt-w"><p class="label">Autres notes</p><div class="nt-list"><a href="pfsense-carp-haute-disponibilite.html"><b>Deux pare-feu pfSense pour une seule passerelle : CARP, pfsync et une bascule mesurée</b><span>3 min de lecture</span></a><a href="active-directory-verrouillage-de-compte.html"><b>Verrouillage de compte Active Directory : le configurer au bon endroit, puis le prouver</b><span>3 min de lecture</span></a></div></div></section>
+<section class="contact cs-cta"><div class="wrap">
+  <h2 class="display">Ce profil vous intéresse ?</h2>
+  <div class="cta"><a class="btn btn-ink" href="../#contact">Me contacter →</a></div>
+</div></section>
+</main>
+<footer><div class="wrap"><span>© 2026 Yacouba Arama</span><span>Conception et identité : Arama Design</span></div></footer>
+<script>
+(() => { const bar = document.getElementById('progress'); const f = () => { const h = document.documentElement, m = h.scrollHeight - h.clientHeight; bar.style.transform = `scaleX(${m>0 ? h.scrollTop/m : 0})`; }; addEventListener('scroll', f, {passive:true}); f(); })();
+</script>
+</body>
+</html>

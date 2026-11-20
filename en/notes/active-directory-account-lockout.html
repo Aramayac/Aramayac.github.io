@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Active Directory account lockout: set it in the right place, then prove it · Yacouba Arama</title>
+<meta name="description" content="A lockout policy protects accounts against brute-force attacks, but only if it actually applies. Here is where to put it, and how I verified it in six commands.">
+<link rel="canonical" href="https://aramayac.github.io/en/notes/active-directory-account-lockout.html">
+<link rel="alternate" hreflang="en" href="https://aramayac.github.io/en/notes/active-directory-account-lockout.html">
+<link rel="alternate" hreflang="fr" href="https://aramayac.github.io/notes/active-directory-verrouillage-de-compte.html">
+<meta name="theme-color" content="#EE4E1C">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aramayac.github.io/en/notes/active-directory-account-lockout.html">
+<meta property="og:title" content="Active Directory account lockout: set it in the right place, then prove it · Yacouba Arama">
+<meta property="og:description" content="A lockout policy protects accounts against brute-force attacks, but only if it actually applies. Here is where to put it, and how I verified it in six commands.">
+<meta property="og:image" content="https://aramayac.github.io/assets/og-image.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../../assets/site.css">
+<meta property="article:published_time" content="2026-11-20">
+<script data-goatcounter="https://aramayac.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../../en/"><i aria-hidden="true"></i>Yacouba Arama</a>
+    <nav aria-label="Sections"><a class="back" href="index.html">← All notes</a></nav>
+    <div class="top-r"><a class="lang" href="../../notes/active-directory-verrouillage-de-compte.html" hreflang="fr" aria-label="FR, Version française">FR</a><a class="hire" href="../../en/#contact" title="Available now">Hire me<span class="dot" aria-hidden="true"></span></a><button class="burger" type="button" aria-expanded="false" aria-controls="mnav" aria-label="Menu"><span></span><span></span></button></div>
+  </div>
+</header>
+<!--mnav--><div class="mnav" id="mnav" hidden><nav aria-label="Menu"><a href="../../en/" style="--i:0"><i>←</i>Home</a><a href="../../en/#metier" style="--i:1"><i>01</i>Skills</a><a href="../../en/#labo" style="--i:2"><i>02</i>Lab</a><a href="../../en/#travaux" style="--i:3"><i>03</i>Work</a><a href="../../en/#certifications" style="--i:4"><i>04</i>Certifications</a><a href="../../en/#notes" style="--i:5"><i>05</i>Notes</a><a href="../../en/#design" style="--i:6"><i>06</i>Design</a><a href="../../en/#parcours" style="--i:7"><i>07</i>Background</a><a href="../../en/#contact" style="--i:8"><i>08</i>Contact</a></nav><div class="mnav-foot"><a href="../../cv/Yacouba_ARAMA_CV.pdf" download data-goatcounter-click="cv-menu">Download my CV ↓</a><a href="https://wa.me/221787597073" target="_blank" rel="noopener" data-goatcounter-click="whatsapp-menu">WhatsApp ↗</a><a href="../../notes/active-directory-verrouillage-de-compte.html" hreflang="fr">Version française</a></div></div><!--/mnav-->
+<script src="../../assets/menu.js" defer></script>
+<main class="nt">
+<article>
+<header class="nt-head"><div class="wrap nt-w">
+  <p class="label"><a href="index.html">Technical notes</a> · 20 November 2026 · 3 min read</p>
+  <h1 class="display">Active Directory account lockout: set it in the right place, then prove it</h1>
+  <p class="intro">A lockout policy protects accounts against brute-force attacks, but only if it actually applies. Here is where to put it, and how I verified it in six commands.</p>
+  <div class="nt-tags"><span>Active Directory</span><span>GPO</span><span>PowerShell</span><span>Windows Server</span></div>
+</div></header>
+<div class="wrap nt-w nt-body">
+  <aside class="nt-tldr"><b>In short</b><ul><li>The password policy for domain accounts is set in a GPO linked to the domain root.</li><li>My values: 10 characters minimum, complexity, 42-day expiry, lockout after 5 failures for 30 minutes.</li><li>Proof: 5 × error 1326, then error 1909, “account locked out”.</li></ul></aside>
+  <h2>Why lock accounts</h2>
+<p>Without a limit, an attacker can try thousands of passwords on an account. Lockout blocks the account after a few failures, so brute force becomes far too slow to succeed.</p>
+<h2>The right place: the domain root</h2>
+<p>This is the classic trap. For domain accounts, Active Directory applies the password and lockout policy <b>only from a GPO linked to the domain root</b>. A GPO linked to an organisational unit (OU) has no effect on these accounts. So I set these values in the <em>Default Domain Policy</em>:</p>
+<div class="nt-tw"><table class="nt-table"><thead><tr><th>Setting</th><th>Value</th></tr></thead><tbody><tr><td>Minimum length</td><td>10 characters</td></tr><tr><td>Complexity</td><td>enabled</td></tr><tr><td>Maximum age</td><td>42 days</td></tr><tr><td>Lockout threshold</td><td>5 failures</td></tr><tr><td>Lockout duration</td><td>30 minutes</td></tr></tbody></table></div>
+<p>Other GPOs harden the workstations: automatic session lock after inactivity (whole domain) and USB storage blocking (Accounting and Sales OUs).</p>
+<h2>Check the value actually applied</h2>
+<p>What matters is the effective value, not the one you think you typed:</p>
+<pre class="nt-code" data-lang="powershell"><code>Get-ADDefaultDomainPasswordPolicy
+# MinPasswordLength : 10   ComplexityEnabled : True   MaxPasswordAge : 42.00:00:00
+# LockoutThreshold  : 5    LockoutDuration   : 00:30:00</code></pre>
+<h2>Prove it with a test</h2>
+<p>On a test account, I ran six connection attempts against DC2 with a wrong password, from a client workstation:</p>
+<pre class="nt-code" data-lang="cmd"><code>for /L %i in (1,1,6) do net use \\192.168.20.12\IPC$ /user:tests.verrou@entreprise.local MauvaisMdp1</code></pre>
+<figure class="nt-fig"><svg class="nt-svg" viewBox="0 0 640 140" role="img" aria-label="Five failures 1326 then lockout 1909">
+<rect x="40" y="40" width="80" height="56" class="nt-box nt-err"/><text x="80" y="64" class="nt-t nt-w" text-anchor="middle">#1</text><text x="80" y="84" class="nt-s nt-w" text-anchor="middle">1326</text><rect x="135" y="40" width="80" height="56" class="nt-box nt-err"/><text x="175" y="64" class="nt-t nt-w" text-anchor="middle">#2</text><text x="175" y="84" class="nt-s nt-w" text-anchor="middle">1326</text><rect x="230" y="40" width="80" height="56" class="nt-box nt-err"/><text x="270" y="64" class="nt-t nt-w" text-anchor="middle">#3</text><text x="270" y="84" class="nt-s nt-w" text-anchor="middle">1326</text><rect x="325" y="40" width="80" height="56" class="nt-box nt-err"/><text x="365" y="64" class="nt-t nt-w" text-anchor="middle">#4</text><text x="365" y="84" class="nt-s nt-w" text-anchor="middle">1326</text><rect x="420" y="40" width="80" height="56" class="nt-box nt-err"/><text x="460" y="64" class="nt-t nt-w" text-anchor="middle">#5</text><text x="460" y="84" class="nt-s nt-w" text-anchor="middle">1326</text><rect x="515" y="40" width="80" height="56" class="nt-box nt-lock"/><text x="555" y="64" class="nt-t nt-w" text-anchor="middle">#6</text><text x="555" y="84" class="nt-s nt-w" text-anchor="middle">1909</text><text x="255" y="122" class="nt-s" text-anchor="middle">wrong password</text><text x="555" y="122" class="nt-s" text-anchor="middle">account locked out</text></svg></figure>
+<p>The first five attempts return error <b>1326</b> (wrong user name or password). The sixth returns error <b>1909</b>: the account is locked out. On the server side, the confirmation:</p>
+<pre class="nt-code" data-lang="powershell"><code>Get-ADUser tests.verrou -Properties LockedOut, BadLogonCount |
+  Select-Object Name, LockedOut, BadLogonCount
+# LockedOut : True   BadLogonCount : 5
+
+Unlock-ADAccount tests.verrou   # unlock after the test</code></pre>
+<h2>Two more useful checks</h2>
+<ul><li><code>gpresult /r /scope user</code> on a workstation confirms that a GPO (here USB blocking) is actually received, and from which controller.</li><li>With DC1 shut down, <code>nltest /dsgetdc:entreprise.local</code> points to DC2, and <code>klist</code> shows the Kerberos tickets come from DC2: the replicated directory holds.</li></ul>
+<aside class="nt-warn"><b>Watch out</b><p>Don&#x27;t trust <code>%LOGONSERVER%</code>: it is set at logon and still showed DC1 while DC2 was answering.</p></aside>
+<h2>Pitfalls and limits</h2>
+<ul><li>Lockout can be abused: an attacker who knows user names can lock accounts on purpose. Threshold and duration are a trade-off between security and availability.</li><li>Monitoring event <b>4740</b> (account locked out) on domain controllers helps spot an attack in progress.</li></ul>
+<h2>Key takeaway</h2>
+<p>A security GPO is only done once you have seen its effect: the right link, the effective value, then a test that deliberately triggers it.</p>
+  <p class="nt-src">Source: my final-year thesis, “Design and security of a company network infrastructure” (ISI Keur Massar, 2026). Measurements taken on a GNS3 and VMware lab.</p>
+  <a class="lab-case" href="../../projects/secure-infrastructure.html">See the full project in the case study →</a>
+</div>
+</article>
+<section class="nt-more"><div class="wrap nt-w"><p class="label">More notes</p><div class="nt-list"><a href="pfsense-carp-high-availability.html"><b>Two pfSense firewalls, one gateway: CARP, pfsync and a measured failover</b><span>3 min read</span></a><a href="suricata-port-scan-rule.html"><b>A custom Suricata rule that blocks a port scan in 6 seconds</b><span>3 min read</span></a></div></div></section>
+<section class="contact cs-cta"><div class="wrap">
+  <h2 class="display">Interested in this profile?</h2>
+  <div class="cta"><a class="btn btn-ink" href="../../en/#contact">Contact me →</a></div>
+</div></section>
+</main>
+<footer><div class="wrap"><span>© 2026 Yacouba Arama</span><span>Design and identity: Arama Design</span></div></footer>
+<script>
+(() => { const bar = document.getElementById('progress'); const f = () => { const h = document.documentElement, m = h.scrollHeight - h.clientHeight; bar.style.transform = `scaleX(${m>0 ? h.scrollTop/m : 0})`; }; addEventListener('scroll', f, {passive:true}); f(); })();
+</script>
+</body>
+</html>

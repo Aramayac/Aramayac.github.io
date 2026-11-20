@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Two pfSense firewalls, one gateway: CARP, pfsync and a measured failover · Yacouba Arama</title>
+<meta name="description" content="A single firewall is a single point of failure. Here is how I built an active/passive pfSense cluster and, above all, how I measured what users actually see when the master fails.">
+<link rel="canonical" href="https://aramayac.github.io/en/notes/pfsense-carp-high-availability.html">
+<link rel="alternate" hreflang="en" href="https://aramayac.github.io/en/notes/pfsense-carp-high-availability.html">
+<link rel="alternate" hreflang="fr" href="https://aramayac.github.io/notes/pfsense-carp-haute-disponibilite.html">
+<meta name="theme-color" content="#EE4E1C">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aramayac.github.io/en/notes/pfsense-carp-high-availability.html">
+<meta property="og:title" content="Two pfSense firewalls, one gateway: CARP, pfsync and a measured failover · Yacouba Arama">
+<meta property="og:description" content="A single firewall is a single point of failure. Here is how I built an active/passive pfSense cluster and, above all, how I measured what users actually see when the master fails.">
+<meta property="og:image" content="https://aramayac.github.io/assets/og-image.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../../assets/site.css">
+<meta property="article:published_time" content="2026-11-20">
+<script data-goatcounter="https://aramayac.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../../en/"><i aria-hidden="true"></i>Yacouba Arama</a>
+    <nav aria-label="Sections"><a class="back" href="index.html">← All notes</a></nav>
+    <div class="top-r"><a class="lang" href="../../notes/pfsense-carp-haute-disponibilite.html" hreflang="fr" aria-label="FR, Version française">FR</a><a class="hire" href="../../en/#contact" title="Available now">Hire me<span class="dot" aria-hidden="true"></span></a><button class="burger" type="button" aria-expanded="false" aria-controls="mnav" aria-label="Menu"><span></span><span></span></button></div>
+  </div>
+</header>
+<!--mnav--><div class="mnav" id="mnav" hidden><nav aria-label="Menu"><a href="../../en/" style="--i:0"><i>←</i>Home</a><a href="../../en/#metier" style="--i:1"><i>01</i>Skills</a><a href="../../en/#labo" style="--i:2"><i>02</i>Lab</a><a href="../../en/#travaux" style="--i:3"><i>03</i>Work</a><a href="../../en/#certifications" style="--i:4"><i>04</i>Certifications</a><a href="../../en/#notes" style="--i:5"><i>05</i>Notes</a><a href="../../en/#design" style="--i:6"><i>06</i>Design</a><a href="../../en/#parcours" style="--i:7"><i>07</i>Background</a><a href="../../en/#contact" style="--i:8"><i>08</i>Contact</a></nav><div class="mnav-foot"><a href="../../cv/Yacouba_ARAMA_CV.pdf" download data-goatcounter-click="cv-menu">Download my CV ↓</a><a href="https://wa.me/221787597073" target="_blank" rel="noopener" data-goatcounter-click="whatsapp-menu">WhatsApp ↗</a><a href="../../notes/pfsense-carp-haute-disponibilite.html" hreflang="fr">Version française</a></div></div><!--/mnav-->
+<script src="../../assets/menu.js" defer></script>
+<main class="nt">
+<article>
+<header class="nt-head"><div class="wrap nt-w">
+  <p class="label"><a href="index.html">Technical notes</a> · 20 November 2026 · 3 min read</p>
+  <h1 class="display">Two pfSense firewalls, one gateway: CARP, pfsync and a measured failover</h1>
+  <p class="intro">A single firewall is a single point of failure. Here is how I built an active/passive pfSense cluster and, above all, how I measured what users actually see when the master fails.</p>
+  <div class="nt-tags"><span>pfSense</span><span>CARP</span><span>pfsync</span><span>High availability</span></div>
+</div></header>
+<div class="wrap nt-w nt-body">
+  <aside class="nt-tldr"><b>In short</b><ul><li>Three building blocks: CARP shares the addresses, pfsync copies connections, XMLRPC copies the configuration.</li><li>Each zone has three addresses: the master&#x27;s, the backup&#x27;s and a virtual one, the only one used as a gateway.</li><li>Measured on my lab: 0 to 5 seconds of downtime depending on the scenario.</li></ul></aside>
+  <h2>The problem</h2>
+<p>In a small business, all traffic goes through the firewall: Internet access, the public website, mail, traffic between departments. If it stops, everything stops. The Availability pillar of the CIA triad therefore calls for a second firewall that takes over without human intervention.</p>
+<h2>The idea in one picture</h2>
+<figure class="nt-fig"><svg class="nt-svg" viewBox="0 0 640 300" role="img" aria-label="CARP cluster: two firewalls share a virtual address">
+<rect x="230" y="18" width="180" height="40" class="nt-box nt-dark"/><text x="320" y="43" class="nt-t nt-w" text-anchor="middle">Workstations and servers</text>
+<line x1="320" y1="58" x2="320" y2="104" class="nt-l"/>
+<rect x="232" y="104" width="176" height="38" class="nt-box nt-vip"/><text x="320" y="122" class="nt-t" text-anchor="middle">Virtual IP</text><text x="320" y="136" class="nt-s" text-anchor="middle">192.168.20.254</text>
+<line x1="270" y1="142" x2="150" y2="196" class="nt-l nt-on"/><line x1="370" y1="142" x2="490" y2="196" class="nt-l nt-dash"/>
+<rect x="70" y="196" width="160" height="60" class="nt-box nt-fw"/><text x="150" y="222" class="nt-t nt-w" text-anchor="middle">PF-MASTER</text><text x="150" y="240" class="nt-s nt-w" text-anchor="middle">MASTER · skew 0</text>
+<rect x="410" y="196" width="160" height="60" class="nt-box nt-fw2"/><text x="490" y="222" class="nt-t nt-w" text-anchor="middle">PF-BACKUP</text><text x="490" y="240" class="nt-s nt-w" text-anchor="middle">BACKUP</text>
+<line x1="230" y1="226" x2="410" y2="226" class="nt-l nt-sync"/><text x="320" y="216" class="nt-s" text-anchor="middle">pfsync + XMLRPC</text><text x="320" y="246" class="nt-s" text-anchor="middle">SYNC link 172.16.0.0/30</text>
+<text x="150" y="284" class="nt-s" text-anchor="middle">answers the VIP</text><text x="490" y="284" class="nt-s" text-anchor="middle">ready to take it over</text>
+</svg></figure>
+<p>pfSense high availability relies on three complementary mechanisms:</p>
+<ul><li><b>CARP</b>: both nodes share a virtual IP address (VIP). The master regularly announces it is alive; if the announcements stop, the backup takes over the address.</li><li><b>pfsync</b>: the state table (open connections) is continuously copied to the backup over a dedicated link.</li><li><b>XMLRPC</b>: the configuration (rules, NAT, virtual IPs…) is pushed from the master to the backup.</li></ul>
+<h2>The addressing plan: three addresses per zone</h2>
+<p>This is what makes the failover invisible: servers and workstations use <b>only the virtual address</b> as their gateway. They never know which node is answering.</p>
+<div class="nt-tw"><table class="nt-table"><thead><tr><th>Zone</th><th>PF-MASTER</th><th>PF-BACKUP</th><th>Virtual IP</th></tr></thead><tbody><tr><td>WAN</td><td>200.100.10.2</td><td>200.100.10.3</td><td>200.100.10.4</td></tr><tr><td>DMZ</td><td>192.168.10.1</td><td>192.168.10.2</td><td>192.168.10.254</td></tr><tr><td>LAN Admin</td><td>192.168.20.1</td><td>192.168.20.2</td><td>192.168.20.254</td></tr><tr><td>VLANs 41–44</td><td>.1 / .65 / .129 / .193</td><td>.2 / .66 / .130 / .194</td><td>.62 / .126 / .190 / .254</td></tr><tr><td>pfsync</td><td>172.16.0.1</td><td>172.16.0.2</td><td>none</td></tr></tbody></table></div>
+<h2>Step-by-step setup</h2>
+<ol><li>Assign the physical address of each interface on both nodes, and change the default admin password.</li><li>Connect the two nodes directly with a dedicated <b>SYNC</b> link (172.16.0.0/30) and allow pfsync traffic on it.</li><li>In <code>System &gt; High Avail. Sync</code> on the master: enable pfsync on the SYNC interface, then XMLRPC sync to 172.16.0.2.</li><li>In <code>Firewall &gt; Virtual IPs</code>: create one CARP VIP per zone and per VLAN, <b>7 virtual addresses</b> in total. The master keeps the lowest <em>skew</em> (0), so it is active by default.</li><li>Declare the virtual addresses as gateways (DHCP, servers) and point the WAN router&#x27;s port forwarding (ports 25, 80, 443) to the WAN VIP 200.100.10.4.</li></ol>
+<aside class="nt-tip"><b>Tip</b><p>A dedicated switch (SW-WAN) puts the router and both firewalls on the same WAN segment: CARP needs both nodes on the same layer-2 network to hear each other.</p></aside>
+<h2>Check: the CARP status</h2>
+<p>In <code>Status &gt; CARP</code>, under normal operation, all 7 addresses are <b>MASTER</b> on PF-MASTER and <b>BACKUP</b> on PF-BACKUP. The <em>Enter Persistent CARP Maintenance Mode</em> button then triggers a clean failover.</p>
+<h2>Measure what users see</h2>
+<p>Showing MASTER proves nothing. So I measured the outage from a workstation in the user LAN, sending one HTTP request per second to an external site:</p>
+<pre class="nt-code" data-lang="bash"><code># one timestamped request per second
+while true; do date +%T; curl -s -o /dev/null -w &quot;%{http_code}\n&quot; --max-time 1 http://external-site; sleep 1; done</code></pre>
+<div class="nt-tw"><table class="nt-table"><thead><tr><th>Scenario</th><th>Measured result</th></tr></thead><tbody><tr><td>Controlled failover master → backup</td><td>no request lost</td></tr><tr><td>Return to the master</td><td>1 request lost, about 3–4 s</td></tr><tr><td>Hard stop of the active node</td><td>4–5 s of downtime</td></tr><tr><td>Continuous ping to 192.168.20.254</td><td>2 timeouts, then replies resume (1–5 ms)</td></tr></tbody></table></div>
+<p>Each test was repeated more than six times over several days, without network load. These are durations observed on a lab, not a guaranteed performance.</p>
+<h2>Pitfalls and limits</h2>
+<ul><li>CARP needs <b>three public addresses</b> on the WAN (one per node plus a virtual one): this has to be negotiated with the ISP.</li><li>The 200.100.10.0/29 range is simulated in an isolated lab. In a reusable document, a documentation range (192.0.2.0/24) would be better.</li><li>For outbound connections to survive a failover, outbound NAT must use the WAN VIP, not a node&#x27;s physical address.</li><li>XMLRPC copies the configuration, but some services (such as Suricata rules) still have to be restarted by hand on the backup.</li></ul>
+<h2>Key takeaway</h2>
+<p>High availability is not declared, it is measured. An all-green dashboard says nothing about what users experience: only a repeated, timestamped test does.</p>
+  <p class="nt-src">Source: my final-year thesis, “Design and security of a company network infrastructure” (ISI Keur Massar, 2026). Measurements taken on a GNS3 and VMware lab.</p>
+  <a class="lab-case" href="../../projects/secure-infrastructure.html">See the full project in the case study →</a>
+</div>
+</article>
+<section class="nt-more"><div class="wrap nt-w"><p class="label">More notes</p><div class="nt-list"><a href="suricata-port-scan-rule.html"><b>A custom Suricata rule that blocks a port scan in 6 seconds</b><span>3 min read</span></a><a href="active-directory-account-lockout.html"><b>Active Directory account lockout: set it in the right place, then prove it</b><span>3 min read</span></a></div></div></section>
+<section class="contact cs-cta"><div class="wrap">
+  <h2 class="display">Interested in this profile?</h2>
+  <div class="cta"><a class="btn btn-ink" href="../../en/#contact">Contact me →</a></div>
+</div></section>
+</main>
+<footer><div class="wrap"><span>© 2026 Yacouba Arama</span><span>Design and identity: Arama Design</span></div></footer>
+<script>
+(() => { const bar = document.getElementById('progress'); const f = () => { const h = document.documentElement, m = h.scrollHeight - h.clientHeight; bar.style.transform = `scaleX(${m>0 ? h.scrollTop/m : 0})`; }; addEventListener('scroll', f, {passive:true}); f(); })();
+</script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>A custom Suricata rule that blocks a port scan in 6 seconds · Yacouba Arama</title>
+<meta name="description" content="The Emerging Threats ruleset reports scans but does not block them. I wrote a threshold rule, tested it in alert mode, then switched it to blocking, on pfSense.">
+<link rel="canonical" href="https://aramayac.github.io/en/notes/suricata-port-scan-rule.html">
+<link rel="alternate" hreflang="en" href="https://aramayac.github.io/en/notes/suricata-port-scan-rule.html">
+<link rel="alternate" hreflang="fr" href="https://aramayac.github.io/notes/suricata-regle-balayage-de-ports.html">
+<meta name="theme-color" content="#EE4E1C">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aramayac.github.io/en/notes/suricata-port-scan-rule.html">
+<meta property="og:title" content="A custom Suricata rule that blocks a port scan in 6 seconds · Yacouba Arama">
+<meta property="og:description" content="The Emerging Threats ruleset reports scans but does not block them. I wrote a threshold rule, tested it in alert mode, then switched it to blocking, on pfSense.">
+<meta property="og:image" content="https://aramayac.github.io/assets/og-image.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../../assets/site.css">
+<meta property="article:published_time" content="2026-11-20">
+<script data-goatcounter="https://aramayac.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../../en/"><i aria-hidden="true"></i>Yacouba Arama</a>
+    <nav aria-label="Sections"><a class="back" href="index.html">← All notes</a></nav>
+    <div class="top-r"><a class="lang" href="../../notes/suricata-regle-balayage-de-ports.html" hreflang="fr" aria-label="FR, Version française">FR</a><a class="hire" href="../../en/#contact" title="Available now">Hire me<span class="dot" aria-hidden="true"></span></a><button class="burger" type="button" aria-expanded="false" aria-controls="mnav" aria-label="Menu"><span></span><span></span></button></div>
+  </div>
+</header>
+<!--mnav--><div class="mnav" id="mnav" hidden><nav aria-label="Menu"><a href="../../en/" style="--i:0"><i>←</i>Home</a><a href="../../en/#metier" style="--i:1"><i>01</i>Skills</a><a href="../../en/#labo" style="--i:2"><i>02</i>Lab</a><a href="../../en/#travaux" style="--i:3"><i>03</i>Work</a><a href="../../en/#certifications" style="--i:4"><i>04</i>Certifications</a><a href="../../en/#notes" style="--i:5"><i>05</i>Notes</a><a href="../../en/#design" style="--i:6"><i>06</i>Design</a><a href="../../en/#parcours" style="--i:7"><i>07</i>Background</a><a href="../../en/#contact" style="--i:8"><i>08</i>Contact</a></nav><div class="mnav-foot"><a href="../../cv/Yacouba_ARAMA_CV.pdf" download data-goatcounter-click="cv-menu">Download my CV ↓</a><a href="https://wa.me/221787597073" target="_blank" rel="noopener" data-goatcounter-click="whatsapp-menu">WhatsApp ↗</a><a href="../../notes/suricata-regle-balayage-de-ports.html" hreflang="fr">Version française</a></div></div><!--/mnav-->
+<script src="../../assets/menu.js" defer></script>
+<main class="nt">
+<article>
+<header class="nt-head"><div class="wrap nt-w">
+  <p class="label"><a href="index.html">Technical notes</a> · 20 November 2026 · 3 min read</p>
+  <h1 class="display">A custom Suricata rule that blocks a port scan in 6 seconds</h1>
+  <p class="intro">The Emerging Threats ruleset reports scans but does not block them. I wrote a threshold rule, tested it in alert mode, then switched it to blocking, on pfSense.</p>
+  <div class="nt-tags"><span>Suricata</span><span>IDS/IPS</span><span>pfSense</span><span>nmap</span></div>
+</div></header>
+<div class="wrap nt-w nt-body">
+  <aside class="nt-tldr"><b>In short</b><ul><li>Suricata runs on both firewalls, with three instances: WAN, DMZ and user LAN.</li><li>Rule 9000001 fires when a single source sends 20 SYN packets within 10 seconds.</li><li>Measured: first alert at 5 s, attacker blocked at 6 s.</li></ul></aside>
+  <h2>Where I started</h2>
+<p>Suricata 7.0.11 is installed as a package on both pfSense nodes. The <b>Emerging Threats Open</b> ruleset loads about 22,570 rules, including the ET SCAN category that spots probes to database ports (3306, 1433, 5432…). But these rules only alert: a scan is seen, not stopped.</p>
+<h2>Where Suricata sits</h2>
+<p>Three instances per node: <b>WAN</b> (em0), <b>DMZ</b> and <b>LAN_USERS</b> (parent interface em3, carrying the VLANs). I used <em>Legacy Mode</em>: Suricata inspects a copy of the packets and, to block, adds the sender&#x27;s address to the pf table <code>snort2c</code>.</p>
+<p>Blocking is enabled only on the master&#x27;s WAN instance, with <em>Block Offenders</em>, <em>Kill States</em>, source blocking, and blocking limited to <code>drop</code> rules. A pass list (PASS_LAB) protects the infrastructure: firewalls, external DNS, internal networks, pfsync link, WAN router.</p>
+<aside class="nt-tip"><b>Tip</b><p>The pass list is essential: without it, an over-sensitive rule could block your own router or DNS servers and cut the company off the Internet.</p></aside>
+<h2>The rule</h2>
+<p>Its logic: <b>one source, 20 SYN packets, 10 seconds</b>. Here is that logic written in Suricata syntax:</p>
+<pre class="nt-code" data-lang="suricata"><code>drop tcp $EXTERNAL_NET any -&gt; $HOME_NET any (msg:&quot;LAB SCAN SYN rafale depuis exterieur - blocage&quot;; \
+  flags:S,12; threshold: type both, track by_src, count 20, seconds 10; \
+  classtype:attempted-recon; sid:9000001; rev:2;)</code></pre>
+<ul><li><code>flags:S,12</code> keeps only SYN packets, the start of every TCP connection, like those from <code>nmap -sS</code>.</li><li><code>threshold … track by_src, count 20, seconds 10</code> counts per source address: at 20 SYNs within 10 seconds, the rule fires.</li><li><code>classtype:attempted-recon</code> files the alert as “Attempted Information Leak”, priority 2.</li></ul>
+<h2>Test in two passes: alert, then block</h2>
+<ol><li>Rule in <code>alert</code> mode. From the Kali machine (192.168.207.164), scan the virtual public address:</li></ol>
+<pre class="nt-code" data-lang="bash"><code>nmap -Pn -sS -T3 --top-ports 100 200.100.10.4</code></pre>
+<p>Result: “LAB SCAN” alerts arrive a few seconds apart, alongside ET SCAN alerts (ports 1521, 1433, 5800–5820). The rule is accurate, and nothing is blocked yet.</p>
+<ol start="2"><li>Switch the rule to <code>drop</code>, run the same scan again, then check the block table on the firewall:</li></ol>
+<pre class="nt-code" data-lang="bash"><code>pfctl -t snort2c -T show
+   192.168.207.164</code></pre>
+<figure class="nt-fig"><svg class="nt-svg" viewBox="0 0 640 140" role="img" aria-label="Timeline: scan at 0 s, alert at 5 s, block at 6 s">
+<line x1="70" y1="62" x2="610" y2="62" class="nt-l"/><line x1="560" y1="62" x2="610" y2="62" class="nt-l nt-dash"/><circle cx="70" cy="62" r="9" class="nt-k"/><text x="70" y="38" class="nt-t" text-anchor="middle">0 s</text><text x="70" y="96" class="nt-s" text-anchor="middle">nmap -sS</text><circle cx="360" cy="62" r="9" class="nt-a"/><text x="360" y="38" class="nt-t" text-anchor="middle">5 s</text><text x="360" y="96" class="nt-s" text-anchor="middle">LAB SCAN alert</text><circle cx="540" cy="62" r="9" class="nt-b"/><text x="540" y="38" class="nt-t" text-anchor="middle">6 s</text><text x="540" y="96" class="nt-s" text-anchor="middle">Kali blocked</text><text x="610" y="126" class="nt-s" text-anchor="end">then: scan slowed down, a little over 100 s in total</text></svg></figure>
+<p>Measured: first alert about <b>5 seconds</b> after launch, Kali&#x27;s address <b>blocked one second later</b>. Slowed by the block, the scan lasted a little over 100 seconds. Unblocking is then done from the <em>Blocks</em> tab.</p>
+<h2>Pitfalls and limits</h2>
+<ul><li>The rule counts <b>SYN packets</b>, not distinct ports: a very fast burst of legitimate connections could trigger it. Hence the pass list.</li><li>In <em>Legacy Mode</em>, a few packets get through before the block, because Suricata works on a copy.</li><li>For outbound traffic, the WAN instance only sees the firewall&#x27;s translated address. To pin an incident on a workstation, you need the LAN_USERS instance, placed before NAT.</li><li>A restart while rules were being rewritten loaded only 15,186 of 22,569. After every change, check for <em>rules successfully loaded</em> on each node.</li><li>Sync copies the rule to the backup without restarting its instance: it has to be restarted manually. Prevention after a failover was not evaluated.</li></ul>
+<h2>Key takeaway</h2>
+<p>A blocking rule is built in two passes: alert first, to make sure it is accurate, then block. And it is never complete without a pass list that protects your own equipment.</p>
+  <p class="nt-src">Source: my final-year thesis, “Design and security of a company network infrastructure” (ISI Keur Massar, 2026). Measurements taken on a GNS3 and VMware lab.</p>
+  <a class="lab-case" href="../../projects/secure-infrastructure.html">See the full project in the case study →</a>
+</div>
+</article>
+<section class="nt-more"><div class="wrap nt-w"><p class="label">More notes</p><div class="nt-list"><a href="pfsense-carp-high-availability.html"><b>Two pfSense firewalls, one gateway: CARP, pfsync and a measured failover</b><span>3 min read</span></a><a href="active-directory-account-lockout.html"><b>Active Directory account lockout: set it in the right place, then prove it</b><span>3 min read</span></a></div></div></section>
+<section class="contact cs-cta"><div class="wrap">
+  <h2 class="display">Interested in this profile?</h2>
+  <div class="cta"><a class="btn btn-ink" href="../../en/#contact">Contact me →</a></div>
+</div></section>
+</main>
+<footer><div class="wrap"><span>© 2026 Yacouba Arama</span><span>Design and identity: Arama Design</span></div></footer>
+<script>
+(() => { const bar = document.getElementById('progress'); const f = () => { const h = document.documentElement, m = h.scrollHeight - h.clientHeight; bar.style.transform = `scaleX(${m>0 ? h.scrollTop/m : 0})`; }; addEventListener('scroll', f, {passive:true}); f(); })();
+</script>
+</body>
+</html>

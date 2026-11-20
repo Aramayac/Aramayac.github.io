@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Deux pare-feu pfSense pour une seule passerelle : CARP, pfsync et une bascule mesurée · Yacouba Arama</title>
+<meta name="description" content="Un pare-feu unique est un point de défaillance unique. Voici comment j&#x27;ai monté un cluster pfSense actif/passif, et surtout comment j&#x27;ai mesuré ce que voit l&#x27;utilisateur quand le maître tombe.">
+<link rel="canonical" href="https://aramayac.github.io/notes/pfsense-carp-haute-disponibilite.html">
+<link rel="alternate" hreflang="fr" href="https://aramayac.github.io/notes/pfsense-carp-haute-disponibilite.html">
+<link rel="alternate" hreflang="en" href="https://aramayac.github.io/en/notes/pfsense-carp-high-availability.html">
+<meta name="theme-color" content="#EE4E1C">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aramayac.github.io/notes/pfsense-carp-haute-disponibilite.html">
+<meta property="og:title" content="Deux pare-feu pfSense pour une seule passerelle : CARP, pfsync et une bascule mesurée · Yacouba Arama">
+<meta property="og:description" content="Un pare-feu unique est un point de défaillance unique. Voici comment j&#x27;ai monté un cluster pfSense actif/passif, et surtout comment j&#x27;ai mesuré ce que voit l&#x27;utilisateur quand le maître tombe.">
+<meta property="og:image" content="https://aramayac.github.io/assets/og-image.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<meta property="article:published_time" content="2026-11-20">
+<script data-goatcounter="https://aramayac.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../"><i aria-hidden="true"></i>Yacouba Arama</a>
+    <nav aria-label="Sections"><a class="back" href="index.html">← Toutes les notes</a></nav>
+    <div class="top-r"><a class="lang" href="../en/notes/pfsense-carp-high-availability.html" hreflang="en" aria-label="EN, English version">EN</a><a class="hire" href="../#contact" title="Disponible dès maintenant">Me recruter<span class="dot" aria-hidden="true"></span></a><button class="burger" type="button" aria-expanded="false" aria-controls="mnav" aria-label="Menu"><span></span><span></span></button></div>
+  </div>
+</header>
+<!--mnav--><div class="mnav" id="mnav" hidden><nav aria-label="Menu"><a href="../" style="--i:0"><i>←</i>Accueil</a><a href="../#metier" style="--i:1"><i>01</i>Métier</a><a href="../#labo" style="--i:2"><i>02</i>Labo</a><a href="../#travaux" style="--i:3"><i>03</i>Travaux</a><a href="../#certifications" style="--i:4"><i>04</i>Certifications</a><a href="../#notes" style="--i:5"><i>05</i>Notes</a><a href="../#design" style="--i:6"><i>06</i>Design</a><a href="../#parcours" style="--i:7"><i>07</i>Parcours</a><a href="../#contact" style="--i:8"><i>08</i>Contact</a></nav><div class="mnav-foot"><a href="../cv/Yacouba_ARAMA_CV.pdf" download data-goatcounter-click="cv-menu">Télécharger mon CV ↓</a><a href="https://wa.me/221787597073" target="_blank" rel="noopener" data-goatcounter-click="whatsapp-menu">WhatsApp ↗</a><a href="../en/notes/pfsense-carp-high-availability.html" hreflang="en">English version</a></div></div><!--/mnav-->
+<script src="../assets/menu.js" defer></script>
+<main class="nt">
+<article>
+<header class="nt-head"><div class="wrap nt-w">
+  <p class="label"><a href="index.html">Notes techniques</a> · 20 novembre 2026 · 3 min de lecture</p>
+  <h1 class="display">Deux pare-feu pfSense pour une seule passerelle : CARP, pfsync et une bascule mesurée</h1>
+  <p class="intro">Un pare-feu unique est un point de défaillance unique. Voici comment j&#x27;ai monté un cluster pfSense actif/passif, et surtout comment j&#x27;ai mesuré ce que voit l&#x27;utilisateur quand le maître tombe.</p>
+  <div class="nt-tags"><span>pfSense</span><span>CARP</span><span>pfsync</span><span>Haute disponibilité</span></div>
+</div></header>
+<div class="wrap nt-w nt-body">
+  <aside class="nt-tldr"><b>En bref</b><ul><li>Trois briques : CARP partage les adresses, pfsync copie les connexions, XMLRPC copie la configuration.</li><li>Chaque zone a trois adresses : celle du maître, celle du secours et une adresse virtuelle, la seule utilisée comme passerelle.</li><li>Mesuré sur ma maquette : de 0 à 5 secondes de coupure selon le scénario.</li></ul></aside>
+  <h2>Le problème</h2>
+<p>Dans une PME, tout le trafic passe par le pare-feu : accès Internet, publication du site web, messagerie, échanges entre services. S&#x27;il s&#x27;arrête, tout s&#x27;arrête. Le pilier « Disponibilité » de la triade CIA demande donc un second pare-feu capable de prendre le relais sans intervention humaine.</p>
+<h2>Le principe en une image</h2>
+<figure class="nt-fig"><svg class="nt-svg" viewBox="0 0 640 300" role="img" aria-label="Cluster CARP : deux pare-feu partagent une adresse virtuelle">
+<rect x="230" y="18" width="180" height="40" class="nt-box nt-dark"/><text x="320" y="43" class="nt-t nt-w" text-anchor="middle">Postes et serveurs</text>
+<line x1="320" y1="58" x2="320" y2="104" class="nt-l"/>
+<rect x="232" y="104" width="176" height="38" class="nt-box nt-vip"/><text x="320" y="122" class="nt-t" text-anchor="middle">Adresse virtuelle</text><text x="320" y="136" class="nt-s" text-anchor="middle">192.168.20.254</text>
+<line x1="270" y1="142" x2="150" y2="196" class="nt-l nt-on"/><line x1="370" y1="142" x2="490" y2="196" class="nt-l nt-dash"/>
+<rect x="70" y="196" width="160" height="60" class="nt-box nt-fw"/><text x="150" y="222" class="nt-t nt-w" text-anchor="middle">PF-MASTER</text><text x="150" y="240" class="nt-s nt-w" text-anchor="middle">MASTER · skew 0</text>
+<rect x="410" y="196" width="160" height="60" class="nt-box nt-fw2"/><text x="490" y="222" class="nt-t nt-w" text-anchor="middle">PF-BACKUP</text><text x="490" y="240" class="nt-s nt-w" text-anchor="middle">BACKUP</text>
+<line x1="230" y1="226" x2="410" y2="226" class="nt-l nt-sync"/><text x="320" y="216" class="nt-s" text-anchor="middle">pfsync + XMLRPC</text><text x="320" y="246" class="nt-s" text-anchor="middle">lien SYNC 172.16.0.0/30</text>
+<text x="150" y="284" class="nt-s" text-anchor="middle">répond à la VIP</text><text x="490" y="284" class="nt-s" text-anchor="middle">prêt à la reprendre</text>
+</svg></figure>
+<p>La haute disponibilité de pfSense repose sur trois mécanismes complémentaires :</p>
+<ul><li><b>CARP</b> : les deux nœuds partagent une adresse IP virtuelle (VIP). Le maître annonce régulièrement qu&#x27;il est vivant ; si les annonces s&#x27;arrêtent, le secours prend l&#x27;adresse.</li><li><b>pfsync</b> : la table d&#x27;états (les connexions en cours) est recopiée en continu vers le secours, sur un lien dédié.</li><li><b>XMLRPC</b> : la configuration (règles, NAT, adresses virtuelles…) est poussée du maître vers le secours.</li></ul>
+<h2>Le plan d&#x27;adressage : trois adresses par zone</h2>
+<p>C&#x27;est la règle qui rend la bascule invisible : les serveurs et les postes n&#x27;utilisent <b>que l&#x27;adresse virtuelle</b> comme passerelle. Ils ne savent jamais quel nœud leur répond.</p>
+<div class="nt-tw"><table class="nt-table"><thead><tr><th>Zone</th><th>PF-MASTER</th><th>PF-BACKUP</th><th>Adresse virtuelle</th></tr></thead><tbody><tr><td>WAN</td><td>200.100.10.2</td><td>200.100.10.3</td><td>200.100.10.4</td></tr><tr><td>DMZ</td><td>192.168.10.1</td><td>192.168.10.2</td><td>192.168.10.254</td></tr><tr><td>LAN Admin</td><td>192.168.20.1</td><td>192.168.20.2</td><td>192.168.20.254</td></tr><tr><td>VLAN 41 à 44</td><td>.1 / .65 / .129 / .193</td><td>.2 / .66 / .130 / .194</td><td>.62 / .126 / .190 / .254</td></tr><tr><td>pfsync</td><td>172.16.0.1</td><td>172.16.0.2</td><td>aucune</td></tr></tbody></table></div>
+<h2>La mise en œuvre, étape par étape</h2>
+<ol><li>Attribuer les adresses physiques de chaque interface sur les deux nœuds, et changer le mot de passe administrateur par défaut.</li><li>Relier directement les deux nœuds par un lien <b>SYNC</b> dédié (172.16.0.0/30) et y autoriser le trafic pfsync.</li><li>Dans <code>System &gt; High Avail. Sync</code> sur le maître : activer pfsync sur l&#x27;interface SYNC, puis la synchronisation XMLRPC vers 172.16.0.2.</li><li>Dans <code>Firewall &gt; Virtual IPs</code> : créer une VIP de type CARP par zone et par VLAN, soit <b>7 adresses virtuelles</b>. Le maître garde le <em>skew</em> le plus bas (0) : c&#x27;est lui qui est actif par défaut.</li><li>Déclarer les adresses virtuelles comme passerelles (DHCP, serveurs) et faire pointer la translation du routeur WAN (ports 25, 80, 443) vers la VIP WAN 200.100.10.4.</li></ol>
+<aside class="nt-tip"><b>Astuce</b><p>Un commutateur dédié (SW-WAN) relie le routeur et les deux pare-feu sur le même segment WAN : CARP a besoin que les deux nœuds soient dans le même réseau de niveau 2 pour s&#x27;entendre.</p></aside>
+<h2>Vérifier : l&#x27;état CARP</h2>
+<p>Dans <code>Status &gt; CARP</code>, en fonctionnement normal, les 7 adresses sont <b>MASTER</b> sur PF-MASTER et <b>BACKUP</b> sur PF-BACKUP. Le bouton <em>Enter Persistent CARP Maintenance Mode</em> permet ensuite de provoquer une bascule propre.</p>
+<h2>Mesurer ce que voit l&#x27;utilisateur</h2>
+<p>Afficher MASTER ne prouve rien. J&#x27;ai donc mesuré la coupure depuis un poste du LAN Utilisateurs, avec une requête HTTP par seconde vers un site externe :</p>
+<pre class="nt-code" data-lang="bash"><code># une requête par seconde, horodatée
+while true; do date +%T; curl -s -o /dev/null -w &quot;%{http_code}\n&quot; --max-time 1 http://site-externe; sleep 1; done</code></pre>
+<div class="nt-tw"><table class="nt-table"><thead><tr><th>Scénario</th><th>Résultat mesuré</th></tr></thead><tbody><tr><td>Bascule contrôlée maître → secours</td><td>aucune requête perdue</td></tr><tr><td>Retour sur le maître</td><td>1 requête perdue, environ 3 à 4 s</td></tr><tr><td>Arrêt brutal du nœud actif</td><td>4 à 5 s d&#x27;interruption</td></tr><tr><td>Ping continu vers 192.168.20.254</td><td>2 délais dépassés, puis reprise (1 à 5 ms)</td></tr></tbody></table></div>
+<p>Chaque essai a été répété plus de six fois, sur plusieurs jours, sans charge réseau. Ce sont des durées observées sur une maquette, pas une performance garantie.</p>
+<h2>Pièges et limites</h2>
+<ul><li>CARP demande <b>trois adresses publiques</b> sur le WAN (une par nœud et une virtuelle) : c&#x27;est à négocier avec l&#x27;opérateur.</li><li>La plage 200.100.10.0/29 est simulée dans un labo isolé. Dans un document réutilisable, une plage de documentation (192.0.2.0/24) serait préférable.</li><li>Pour que les connexions sortantes survivent à la bascule, la NAT sortante doit utiliser la VIP WAN et non l&#x27;adresse physique d&#x27;un nœud.</li><li>XMLRPC copie la configuration, mais certains services (comme les règles Suricata) doivent encore être relancés à la main sur le secours.</li></ul>
+<h2>Ce que je retiens</h2>
+<p>La haute disponibilité ne se déclare pas, elle se mesure. Un tableau tout vert ne dit rien de ce que vit l&#x27;utilisateur : seul un test horodaté, répété, le montre.</p>
+  <p class="nt-src">Source : mon mémoire de Licence 3, « Conception et sécurisation d&#x27;une infrastructure réseau d&#x27;entreprise » (ISI Keur Massar, 2026). Mesures réalisées sur une maquette GNS3 et VMware.</p>
+  <a class="lab-case" href="../projets/infrastructure-securisee.html">Voir le projet complet dans l'étude de cas →</a>
+</div>
+</article>
+<section class="nt-more"><div class="wrap nt-w"><p class="label">Autres notes</p><div class="nt-list"><a href="suricata-regle-balayage-de-ports.html"><b>Une règle Suricata maison pour bloquer un balayage de ports en 6 secondes</b><span>3 min de lecture</span></a><a href="active-directory-verrouillage-de-compte.html"><b>Verrouillage de compte Active Directory : le configurer au bon endroit, puis le prouver</b><span>3 min de lecture</span></a></div></div></section>
+<section class="contact cs-cta"><div class="wrap">
+  <h2 class="display">Ce profil vous intéresse ?</h2>
+  <div class="cta"><a class="btn btn-ink" href="../#contact">Me contacter →</a></div>
+</div></section>
+</main>
+<footer><div class="wrap"><span>© 2026 Yacouba Arama</span><span>Conception et identité : Arama Design</span></div></footer>
+<script>
+(() => { const bar = document.getElementById('progress'); const f = () => { const h = document.documentElement, m = h.scrollHeight - h.clientHeight; bar.style.transform = `scaleX(${m>0 ? h.scrollTop/m : 0})`; }; addEventListener('scroll', f, {passive:true}); f(); })();
+</script>
+</body>
+</html>
