@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Défendre une administration et prouver qu&#x27;on voit l&#x27;attaque · Yacouba Arama</title>
+<meta name="description" content="Protéger les serveurs d&#x27;une administration fictive, la DGID, puis démontrer qu&#x27;une attaque réelle est détectée et stoppée automatiquement.">
+<link rel="canonical" href="https://aramayac.github.io/projets/defense-dgid.html">
+<link rel="alternate" hreflang="fr" href="https://aramayac.github.io/projets/defense-dgid.html">
+<link rel="alternate" hreflang="en" href="https://aramayac.github.io/en/projects/blue-team-dgid.html">
+<meta name="theme-color" content="#EE4E1C">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aramayac.github.io/projets/defense-dgid.html">
+<meta property="og:title" content="Défendre une administration et prouver qu&#x27;on voit l&#x27;attaque · Yacouba Arama">
+<meta property="og:description" content="Protéger les serveurs d&#x27;une administration fictive, la DGID, puis démontrer qu&#x27;une attaque réelle est détectée et stoppée automatiquement.">
+<meta property="og:image" content="https://aramayac.github.io/assets/og-image.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<script data-goatcounter="https://aramayac.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../"><i aria-hidden="true"></i>Yacouba Arama</a>
+    <nav aria-label="Sections"><a href="../">← Retour au portfolio</a></nav>
+    <div class="top-r"><a class="lang" href="../en/projects/blue-team-dgid.html" hreflang="en" aria-label="English version">EN</a><a class="hire" href="../#contact">Me recruter</a></div>
+  </div>
+</header>
+<main class="cs">
+<section class="cs-hero"><div class="wrap">
+  <p class="label">Étude de cas · BTS Cybersécurité · Sécurité défensive</p>
+  <h1 class="display">Défendre une administration et prouver qu&#x27;on voit l&#x27;attaque</h1>
+  <p class="intro">Protéger les serveurs d&#x27;une administration fictive, la DGID, puis démontrer qu&#x27;une attaque réelle est détectée et stoppée automatiquement.</p>
+  <dl class="cs-meta"><div><dt>Contexte</dt><dd>Travail pratique noté du BTS Cybersécurité</dd></div><div><dt>Rôle</dt><dd>Réalisation complète, étape par étape</dd></div><div><dt>Livrable</dt><dd>Compte rendu technique avec captures</dd></div></dl>
+</div></section>
+<section class="cs-kpis"><div class="wrap"><div><b>9</b><span>étapes validées une à une</span></div><div><b>3</b><span>couches de défense : réseau, système, supervision</span></div><div><b>1</b><span>attaque simulée, détectée et bannie</span></div></div></section>
+<section class="cs-sec"><div class="wrap cs-two">
+  <h2 class="label">Le besoin</h2><p class="cs-big">Une administration publique expose des serveurs sensibles. Il fallait réduire la surface d&#x27;attaque au strict nécessaire, durcir les serveurs Linux et mettre en place une supervision capable de repérer une intrusion.</p>
+</div></section>
+<section class="cs-sec cs-arch"><div class="wrap">
+  <div class="cs-two"><h2 class="label">Architecture</h2><p>pfSense filtre l&#x27;entrée et la sortie. Le serveur héberge Wazuh, qui reçoit les journaux de l&#x27;agent installé sur le client.</p></div>
+  <figure class="cs-fig"><svg class="dg" viewBox="0 0 820 420" role="img" aria-label="Architecture du TP : pfSense devant un LAN avec un serveur Wazuh et un client supervisé"><title>Architecture du TP : pfSense devant un LAN avec un serveur Wazuh et un client supervisé</title><g class="dg-ext"><rect x="330" y="14" width="160" height="46"/><text x="410.0" y="31.0" text-anchor="middle" class="t1">Internet</text><text x="410.0" y="50.0" text-anchor="middle" class="t2">WAN · NAT</text></g><g class="dg-atk"><rect x="40" y="14" width="180" height="46"/><text x="130.0" y="31.0" text-anchor="middle" class="t1">Poste attaquant (test)</text><text x="130.0" y="50.0" text-anchor="middle" class="t2">SSH brute force</text></g><line class="dg-atk" x1="220" y1="37" x2="330" y2="37"/><line class="dg-l" x1="410" y1="60" x2="410" y2="104"/><g class="dg-fw"><rect x="300" y="104" width="220" height="60"/><text x="410.0" y="128.0" text-anchor="middle" class="t1">pfSense</text><text x="410.0" y="147.0" text-anchor="middle" class="t2">Suricata · Snort</text></g><text x="540" y="128" class="t2">WAN:2222 → SSH:22</text><text x="540" y="146" class="t2">LAN → WAN : HTTP, HTTPS, DNS</text><line class="dg-l" x1="410" y1="164" x2="410" y2="210"/><g class="dg-zone"><rect x="80" y="210" width="660" height="200"/><text x="92" y="232" class="tz">LAN · 192.168.10.0/24</text></g><g class="dg-n"><rect x="130" y="262" width="250" height="60"/><text x="255.0" y="286.0" text-anchor="middle" class="t1">Ubuntu_Serveur</text><text x="255.0" y="305.0" text-anchor="middle" class="t2">Wazuh manager</text></g><g class="dg-n"><rect x="440" y="262" width="250" height="60"/><text x="565.0" y="286.0" text-anchor="middle" class="t1">Ubuntu_Client</text><text x="565.0" y="305.0" text-anchor="middle" class="t2">agent Wazuh</text></g><line class="dg-sync" x1="380" y1="292" x2="440" y2="292"/><text x="255" y="350" text-anchor="middle" class="t2">SSH (clés) · UFW · Fail2ban</text><text x="565" y="350" text-anchor="middle" class="t2">journaux → Wazuh</text></svg></figure>
+</div></section>
+<section class="cs-sec"><div class="wrap cs-two">
+  <h2 class="label">Ce que j'ai fait</h2>
+  <ol class="cs-steps"><li><b>Restreindre la sortie</b><p>Règle pfSense LAN vers WAN limitée à HTTP, HTTPS et DNS. L&#x27;ancienne règle « tout autoriser » est désactivée.</p></li><li><b>Fermer SSH depuis l&#x27;extérieur</b><p>Blocage explicite du port 22 depuis le WAN vers le serveur.</p></li><li><b>Ouvrir une porte d&#x27;administration contrôlée</b><p>Redirection NAT du port 2222 du WAN vers le SSH du serveur, pour un accès d&#x27;administration maîtrisé.</p></li><li><b>Durcir SSH</b><p>Authentification par clés, PermitRootLogin no, PasswordAuthentication no, AllowUsers.</p></li><li><b>Activer le pare-feu local</b><p>UFW en refus entrant par défaut, SSH et 443 limités au LAN, limitation de débit sur SSH.</p></li><li><b>Réduire la surface système</b><p>Fail2ban, nettoyage des comptes, politique de mots de passe, sudo restreint, services inutiles désactivés.</p></li><li><b>Superviser avec Wazuh</b><p>Installation du serveur Wazuh et d&#x27;un agent sur le client, puis simulation d&#x27;une attaque par force brute sur SSH.</p></li><li><b>Vérifier l&#x27;ensemble</b><p>Contrôle global de chaque règle et de chaque service après les changements.</p></li><li><b>Documenter</b><p>Compte rendu professionnel avec les captures de chaque étape.</p></li></ol>
+</div></section>
+<section class="cs-sec cs-issue"><div class="wrap cs-two">
+  <h2 class="label">Problème rencontré</h2>
+  <div><h3>La DMZ restait injoignable</h3><p>Malgré les règles ajoutées, le client ne joignait ni la DMZ ni l&#x27;interface pfSense. Plutôt que de bloquer tout le TP, j&#x27;ai regroupé les deux machines sur le LAN pour avancer, et noté la segmentation DMZ comme amélioration.</p></div>
+</div></section>
+<section class="cs-sec"><div class="wrap cs-two">
+  <h2 class="label">Résultats</h2>
+  <ul class="cs-res"><li>Le brute force SSH apparaît dans le tableau de bord Wazuh.</li><li>L&#x27;adresse de l&#x27;attaquant est bannie automatiquement par Fail2ban.</li><li>Seuls HTTP, HTTPS et DNS sortent du LAN.</li><li>SSH n&#x27;est plus accessible directement depuis Internet.</li></ul>
+</div></section>
+<section class="cs-sec"><div class="wrap cs-two">
+  <h2 class="label">Outils</h2><p class="cs-stack">pfSense, Suricata, Snort, Wazuh, Ubuntu Server, UFW, Fail2ban, OpenSSH, VirtualBox</p>
+</div></section>
+<section class="cs-next"><div class="wrap">
+  <a href="vpn-ipsec.html"><span class="label">Étude suivante</span><b class="display">Relier deux agences par un tunnel chiffré →</b></a>
+</div></section>
+<section class="contact cs-cta"><div class="wrap">
+  <h2 class="display">Ce profil vous intéresse ?</h2>
+  <div class="cta"><a class="btn btn-ink" href="../#contact">Me contacter →</a><a class="btn btn-line" href="../cv/Yacouba_ARAMA_CV.pdf" download data-goatcounter-click="cv-1page">Télécharger mon CV</a></div>
+</div></section>
+</main>
+<footer><div class="wrap"><span>© 2026 Yacouba Arama</span><span>Conception et identité : Arama Design</span></div></footer>
+<script>
+(() => { const bar = document.getElementById('progress'); const f = () => { const h = document.documentElement, m = h.scrollHeight - h.clientHeight; bar.style.transform = `scaleX(${m>0 ? h.scrollTop/m : 0})`; }; addEventListener('scroll', f, {passive:true}); f(); })();
+</script>
+</body>
+</html>

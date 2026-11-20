@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Linking two branches with an encrypted tunnel · Yacouba Arama</title>
+<meta name="description" content="Connect the Richard-Toll and Dakar branches with a site-to-site IPsec VPN that guarantees confidentiality, integrity and availability.">
+<link rel="canonical" href="https://aramayac.github.io/en/projects/ipsec-vpn.html">
+<link rel="alternate" hreflang="en" href="https://aramayac.github.io/en/projects/ipsec-vpn.html">
+<link rel="alternate" hreflang="fr" href="https://aramayac.github.io/projets/vpn-ipsec.html">
+<meta name="theme-color" content="#EE4E1C">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aramayac.github.io/en/projects/ipsec-vpn.html">
+<meta property="og:title" content="Linking two branches with an encrypted tunnel · Yacouba Arama">
+<meta property="og:description" content="Connect the Richard-Toll and Dakar branches with a site-to-site IPsec VPN that guarantees confidentiality, integrity and availability.">
+<meta property="og:image" content="https://aramayac.github.io/assets/og-image.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../../assets/site.css">
+<script data-goatcounter="https://aramayac.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../../en/"><i aria-hidden="true"></i>Yacouba Arama</a>
+    <nav aria-label="Sections"><a href="../../en/">← Back to portfolio</a></nav>
+    <div class="top-r"><a class="lang" href="../../projets/vpn-ipsec.html" hreflang="fr" aria-label="Version française">FR</a><a class="hire" href="../../en/#contact">Hire me</a></div>
+  </div>
+</header>
+<main class="cs">
+<section class="cs-hero"><div class="wrap">
+  <p class="label">Case study · Group project · BSc Computer Networks, year 3</p>
+  <h1 class="display">Linking two branches with an encrypted tunnel</h1>
+  <p class="intro">Connect the Richard-Toll and Dakar branches with a site-to-site IPsec VPN that guarantees confidentiality, integrity and availability.</p>
+  <dl class="cs-meta"><div><dt>Team</dt><dd>6 students</dd></div><div><dt>Environment</dt><dd>EVE-NG simulation</dd></div><div><dt>Deliverables</dt><dd>Report, 21-slide presentation</dd></div></dl>
+</div></section>
+<section class="cs-kpis"><div class="wrap"><div><b>0%</b><span>packet loss over 500 packets</span></div><div><b>2</b><span>FortiGate firewalls</span></div><div><b>ESP</b><span>encrypted traffic checked in Wireshark</span></div></div></section>
+<section class="cs-sec"><div class="wrap cs-two">
+  <h2 class="label">The need</h2><p class="cs-big">Two branches of the same company must exchange sensitive data over the Internet. They needed an encrypted, stable link that is easy to run, without a leased line.</p>
+</div></section>
+<section class="cs-sec cs-arch"><div class="wrap">
+  <div class="cs-two"><h2 class="label">Architecture</h2><p>Each branch has its LAN behind a FortiGate. A Cisco router simulates the Internet between them, and the IPsec tunnel runs on top.</p></div>
+  <figure class="cs-fig"><svg class="dg" viewBox="0 0 820 420" role="img" aria-label="Two branches linked by an IPsec tunnel between two FortiGates across an Internet router"><title>Two branches linked by an IPsec tunnel between two FortiGates across an Internet router</title><g class="dg-zone"><rect x="20" y="20" width="300" height="380"/><text x="32" y="42" class="tz">Richard-Toll</text></g><g class="dg-zone"><rect x="500" y="20" width="300" height="380"/><text x="512" y="42" class="tz">Dakar</text></g><g class="dg-n"><rect x="60" y="70" width="220" height="46"/><text x="170.0" y="87.0" text-anchor="middle" class="t1">PC Windows</text><text x="170.0" y="106.0" text-anchor="middle" class="t2">LAN 192.168.10.0/24</text></g><g class="dg-n"><rect x="540" y="70" width="220" height="46"/><text x="650.0" y="87.0" text-anchor="middle" class="t1">PC Windows</text><text x="650.0" y="106.0" text-anchor="middle" class="t2">LAN 192.168.20.0/24</text></g><g class="dg-n"><rect x="60" y="150" width="220" height="40"/><text x="170.0" y="175.0" text-anchor="middle" class="t1">Switch</text></g><g class="dg-n"><rect x="540" y="150" width="220" height="40"/><text x="650.0" y="175.0" text-anchor="middle" class="t1">Switch</text></g><g class="dg-fw"><rect x="60" y="230" width="220" height="56"/><text x="170.0" y="252.0" text-anchor="middle" class="t1">FGT-RME-RT</text><text x="170.0" y="271.0" text-anchor="middle" class="t2">LAN .10.254 · WAN 192.100.1.1/30</text></g><g class="dg-fw"><rect x="540" y="230" width="220" height="56"/><text x="650.0" y="252.0" text-anchor="middle" class="t1">FGT-RME-DKR</text><text x="650.0" y="271.0" text-anchor="middle" class="t2">LAN .20.254 · WAN 192.100.2.1/30</text></g><line class="dg-l" x1="170" y1="116" x2="170" y2="150"/><line class="dg-l" x1="650" y1="116" x2="650" y2="150"/><line class="dg-l" x1="170" y1="190" x2="170" y2="230"/><line class="dg-l" x1="650" y1="190" x2="650" y2="230"/><g class="dg-ext"><rect x="340" y="236" width="140" height="44"/><text x="410.0" y="252.0" text-anchor="middle" class="t1">R2 · Cisco</text><text x="410.0" y="271.0" text-anchor="middle" class="t2">Internet</text></g><line class="dg-l" x1="280" y1="258" x2="340" y2="258"/><line class="dg-l" x1="480" y1="258" x2="540" y2="258"/><path class="dg-tun" d="M170 286 C 170 370, 650 370, 650 286"/><text x="410" y="372" text-anchor="middle" class="t1 tun">Site-to-site IPsec tunnel</text><text x="410" y="392" text-anchor="middle" class="t2">IKE · pre-shared key · ESP</text></svg></figure>
+</div></section>
+<section class="cs-sec"><div class="wrap cs-two">
+  <h2 class="label">What I did</h2>
+  <ol class="cs-steps"><li><b>Address both sites</b><p>LAN 192.168.10.0/24 in Richard-Toll and 192.168.20.0/24 in Dakar, /30 WAN links to the Internet router.</p></li><li><b>Route</b><p>Static routing between the sites and towards router R2.</p></li><li><b>Write the policies</b><p>FortiGate security policies allowing only LAN-to-LAN traffic through the tunnel.</p></li><li><b>Build the tunnel</b><p>Site-to-site IPsec tunnel with the FortiGate wizard: IKE phase 1 with a pre-shared key, then phase 2.</p></li><li><b>Test connectivity</b><p>Pings and exchanges between the Windows clients of both branches.</p></li><li><b>Prove the encryption</b><p>Wireshark capture on the Internet link with the esp filter: the payload is no longer readable.</p></li><li><b>Measure stability</b><p>500 packets sent through the tunnel and a performance table.</p></li></ol>
+</div></section>
+<section class="cs-sec"><div class="wrap cs-two">
+  <h2 class="label">Results</h2>
+  <ul class="cs-res"><li>Both LANs talk as if they were on the same site.</li><li>Only encrypted ESP traffic is visible on the Internet link.</li><li>0% loss over 500 packets.</li></ul>
+</div></section>
+<section class="cs-sec"><div class="wrap cs-two">
+  <h2 class="label">Tools</h2><p class="cs-stack">FortiGate, IPsec, IKE, EVE-NG, Cisco IOS, Windows, Wireshark</p>
+</div></section>
+<section class="cs-next"><div class="wrap">
+  <a href="secure-infrastructure.html"><span class="label">Next case study</span><b class="display">A company network, designed then attacked →</b></a>
+</div></section>
+<section class="contact cs-cta"><div class="wrap">
+  <h2 class="display">Interested in this profile?</h2>
+  <div class="cta"><a class="btn btn-ink" href="../../en/#contact">Contact me →</a><a class="btn btn-line" href="../../cv/Yacouba_ARAMA_CV.pdf" download data-goatcounter-click="cv-1page">Download my CV</a></div>
+</div></section>
+</main>
+<footer><div class="wrap"><span>© 2026 Yacouba Arama</span><span>Design and identity: Arama Design</span></div></footer>
+<script>
+(() => { const bar = document.getElementById('progress'); const f = () => { const h = document.documentElement, m = h.scrollHeight - h.clientHeight; bar.style.transform = `scaleX(${m>0 ? h.scrollTop/m : 0})`; }; addEventListener('scroll', f, {passive:true}); f(); })();
+</script>
+</body>
+</html>

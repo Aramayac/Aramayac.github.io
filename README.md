@@ -23,3 +23,24 @@ Catégories possibles : Logo, Affiche, Flyer, Identité visuelle, Autre.
 Remplacez le fichier concerné dans `cv/`, en gardant le même nom :
 - `cv/Yacouba_ARAMA_CV.pdf` : CV synthétique (1 page)
 - `cv/Yacouba_ARAMA_CV_detaille.pdf` : CV détaillé (3 pages)
+
+## Ajouter une recommandation
+
+Ouvrez `testimonials.json` et ajoutez une entrée (uniquement de vraies citations, avec l'accord de la personne) :
+
+```json
+[
+  {
+    "quote": { "fr": "Texte en français.", "en": "Text in English." },
+    "name": "Prénom Nom",
+    "role": { "fr": "Fonction, organisation", "en": "Role, organisation" }
+  }
+]
+```
+
+La section « Recommandations » apparaît automatiquement dès qu'il y a au moins une entrée.
+
+## Version anglaise et études de cas
+
+- Page d'accueil anglaise : `en/index.html`
+- Études de cas : `projets/` (français) et `en/projects/` (anglais)

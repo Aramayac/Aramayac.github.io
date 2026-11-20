@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>A company network, designed then attacked · Yacouba Arama</title>
+<meta name="description" content="Design, deploy and audit a complete company infrastructure with security built in from the start, then measure every result.">
+<link rel="canonical" href="https://aramayac.github.io/en/projects/secure-infrastructure.html">
+<link rel="alternate" hreflang="en" href="https://aramayac.github.io/en/projects/secure-infrastructure.html">
+<link rel="alternate" hreflang="fr" href="https://aramayac.github.io/projets/infrastructure-securisee.html">
+<meta name="theme-color" content="#EE4E1C">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aramayac.github.io/en/projects/secure-infrastructure.html">
+<meta property="og:title" content="A company network, designed then attacked · Yacouba Arama">
+<meta property="og:description" content="Design, deploy and audit a complete company infrastructure with security built in from the start, then measure every result.">
+<meta property="og:image" content="https://aramayac.github.io/assets/og-image.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Schibsted+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="../../assets/site.css">
+<script data-goatcounter="https://aramayac.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../../en/"><i aria-hidden="true"></i>Yacouba Arama</a>
+    <nav aria-label="Sections"><a href="../../en/">← Back to portfolio</a></nav>
+    <div class="top-r"><a class="lang" href="../../projets/infrastructure-securisee.html" hreflang="fr" aria-label="Version française">FR</a><a class="hire" href="../../en/#contact">Hire me</a></div>
+  </div>
+</header>
+<main class="cs">
+<section class="cs-hero"><div class="wrap">
+  <p class="label">Case study · Final-year project · ISI Keur Massar · 2026</p>
+  <h1 class="display">A company network, designed then attacked</h1>
+  <p class="intro">Design, deploy and audit a complete company infrastructure with security built in from the start, then measure every result.</p>
+  <dl class="cs-meta"><div><dt>Role</dt><dd>Design, deployment and audit, working independently</dd></div><div><dt>Supervisor</dt><dd>Mr Racine Oumar SALL</dd></div><div><dt>Deliverable</dt><dd>73-page thesis, defence in December 2026</dd></div></dl>
+</div></section>
+<section class="cs-kpis"><div class="wrap"><div><b>14</b><span>machines and devices deployed</span></div><div><b>3–5 s</b><span>of downtime when a firewall fails</span></div><div><b>6 s</b><span>to detect and block a port scan</span></div><div><b>25 → 3</b><span>TLS 1.2 cipher suites after hardening</span></div></div></section>
+<section class="cs-sec"><div class="wrap cs-two">
+  <h2 class="label">The need</h2><p class="cs-big">A small company needs a network that stays up when a device fails, keeps its public services apart from its internal network, and raises an alarm when it is attacked. The goal was to build that infrastructure end to end, then attack it myself to prove it holds.</p>
+</div></section>
+<section class="cs-sec cs-arch"><div class="wrap">
+  <div class="cs-two"><h2 class="label">Architecture</h2><p>Three zones separated by a two-firewall cluster. Any flow not allowed by the flow matrix is denied and logged.</p></div>
+  <figure class="cs-fig"><svg class="dg" viewBox="0 0 820 440" role="img" aria-label="Project architecture: Internet, pfSense cluster, DMZ, admin LAN and user LAN"><title>Project architecture: Internet, pfSense cluster, DMZ, admin LAN and user LAN</title><g class="dg-ext"><rect x="330" y="14" width="160" height="46"/><text x="410.0" y="31.0" text-anchor="middle" class="t1">Internet</text><text x="410.0" y="50.0" text-anchor="middle" class="t2">WAN</text></g><line class="dg-l" x1="410" y1="60" x2="300" y2="104"/><line class="dg-l" x1="410" y1="60" x2="520" y2="104"/><g class="dg-fw"><rect x="210" y="104" width="180" height="56"/><text x="300.0" y="126.0" text-anchor="middle" class="t1">FW-01 · pfSense</text><text x="300.0" y="145.0" text-anchor="middle" class="t2">MASTER</text></g><g class="dg-fw2"><rect x="430" y="104" width="180" height="56"/><text x="520.0" y="126.0" text-anchor="middle" class="t1">FW-02 · pfSense</text><text x="520.0" y="145.0" text-anchor="middle" class="t2">BACKUP</text></g><line class="dg-sync" x1="390" y1="132" x2="430" y2="132"/><text x="410" y="186" text-anchor="middle" class="t2">CARP · pfsync · XMLRPC · 7 VIP</text><line class="dg-l" x1="300" y1="160" x2="140" y2="222"/><line class="dg-l" x1="410" y1="160" x2="410" y2="222"/><line class="dg-l" x1="520" y1="160" x2="680" y2="222"/><g class="dg-zone"><rect x="20" y="222" width="240" height="200"/><text x="32" y="244" class="tz">DMZ</text></g><g class="dg-zone"><rect x="290" y="222" width="240" height="200"/><text x="302" y="244" class="tz">Admin LAN</text></g><g class="dg-zone"><rect x="560" y="222" width="240" height="200"/><text x="572" y="244" class="tz">User LAN</text></g><g class="dg-n"><rect x="40" y="262" width="200" height="46"/><text x="140.0" y="279.0" text-anchor="middle" class="t1">Nginx</text><text x="140.0" y="298.0" text-anchor="middle" class="t2">HTTPS · TLS 1.2</text></g><g class="dg-n"><rect x="40" y="320" width="200" height="46"/><text x="140.0" y="337.0" text-anchor="middle" class="t1">Postfix · Dovecot</text><text x="140.0" y="356.0" text-anchor="middle" class="t2">Debian 13</text></g><g class="dg-n"><rect x="310" y="262" width="95" height="46"/><text x="357.5" y="279.0" text-anchor="middle" class="t1">AD-DC1</text><text x="357.5" y="298.0" text-anchor="middle" class="t2">AD DS · DNS</text></g><g class="dg-n"><rect x="415" y="262" width="95" height="46"/><text x="462.5" y="279.0" text-anchor="middle" class="t1">AD-DC2</text><text x="462.5" y="298.0" text-anchor="middle" class="t2">replication</text></g><g class="dg-n"><rect x="310" y="320" width="200" height="46"/><text x="410.0" y="337.0" text-anchor="middle" class="t1">Zabbix 7.0</text><text x="410.0" y="356.0" text-anchor="middle" class="t2">9 hosts · agent + SNMP</text></g><line class="dg-sync" x1="405" y1="285" x2="415" y2="285"/><g class="dg-v"><rect x="580" y="262" width="44" height="46"/><text x="602.0" y="279.0" text-anchor="middle" class="t1">VLAN</text><text x="602.0" y="298.0" text-anchor="middle" class="t2">10</text></g><g class="dg-v"><rect x="632" y="262" width="44" height="46"/><text x="654.0" y="279.0" text-anchor="middle" class="t1">VLAN</text><text x="654.0" y="298.0" text-anchor="middle" class="t2">20</text></g><g class="dg-v"><rect x="684" y="262" width="44" height="46"/><text x="706.0" y="279.0" text-anchor="middle" class="t1">VLAN</text><text x="706.0" y="298.0" text-anchor="middle" class="t2">30</text></g><g class="dg-v"><rect x="736" y="262" width="44" height="46"/><text x="758.0" y="279.0" text-anchor="middle" class="t1">VLAN</text><text x="758.0" y="298.0" text-anchor="middle" class="t2">40</text></g><g class="dg-n"><rect x="580" y="320" width="200" height="46"/><text x="680.0" y="337.0" text-anchor="middle" class="t1">802.1Q · /26</text><text x="680.0" y="356.0" text-anchor="middle" class="t2">DHCP · trunks</text></g><g class="dg-ids"><rect x="214" y="196" width="88" height="20"/><text x="258" y="210" text-anchor="middle">Suricata</text></g><g class="dg-ids"><rect x="518" y="196" width="88" height="20"/><text x="562" y="210" text-anchor="middle">Suricata</text></g></svg></figure>
+</div></section>
+<section class="cs-sec"><div class="wrap cs-two">
+  <h2 class="label">What I did</h2>
+  <ol class="cs-steps"><li><b>Design before installing</b><p>IPv4 plan split into /24, /26, /29 and /30, least-privilege flow matrix, logged default deny. Every phase could be rolled back with VMware snapshots.</p></li><li><b>Make the firewall redundant</b><p>Two pfSense firewalls in active/passive mode linked by CARP, pfsync and XMLRPC, with 7 virtual IPs. Failover tested by shutting down the master.</p></li><li><b>Segment the user network</b><p>Four 802.1Q VLANs in /26 with DHCP, hardened trunks (native VLAN changed, allowed VLANs restricted) and per-service filtering rules.</p></li><li><b>Centralise identities</b><p>Active Directory on two replicated domain controllers, organisational units and GPOs: passwords, account and session lockout, USB blocking. Checked with repadmin and gpresult.</p></li><li><b>Publish services in the DMZ</b><p>Nginx over HTTPS and Postfix/Dovecot mail on Debian 13, with TLS certificates signed by an internal authority.</p></li><li><b>Detect and block</b><p>Suricata on both firewalls with the Emerging Threats ruleset and a custom threshold rule, automatic blocking of the attacker, and a pass list to cut false alarms.</p></li><li><b>Monitor</b><p>Zabbix 7.0 tracks 9 hosts through agents and SNMP, with triggers and email alerts tested end to end.</p></li><li><b>Audit and fix</b><p>NIST SP 800-115 approach with nmap, OWASP ZAP, Nikto, swaks, ncat and curl, then fixes: HSTS, CSP and security headers, stronger TLS, VRFY and ETRN disabled, open SMTP relay refused.</p></li></ol>
+</div></section>
+<section class="cs-sec cs-issue"><div class="wrap cs-two">
+  <h2 class="label">Problem solved on the way</h2>
+  <div><h3>A saturated link with no obvious cause</h3><p>The traffic came from the Windows clients on the user network. I found the cause and neutralised it with a group policy, without touching the network core.</p></div>
+</div></section>
+<section class="cs-sec"><div class="wrap cs-two">
+  <h2 class="label">Results</h2>
+  <ul class="cs-res"><li>Firewall failover measured between 3 and 5 seconds.</li><li>Port scan detected in 5 s and attacker blocked in 6 s.</li><li>Only 3 ports exposed after the audit.</li><li>Zero replication failures between the two domain controllers.</li><li>Zabbix alerting tested all the way to the inbox.</li></ul>
+</div></section>
+<section class="cs-sec"><div class="wrap cs-two">
+  <h2 class="label">Tools</h2><p class="cs-stack">pfSense CE, Suricata 7, Windows Server (AD DS, DNS, GPO), Debian 13, Nginx, Postfix, Dovecot, Zabbix 7.0, Cisco IOS (c3725, c7200), GNS3, VMware Workstation Pro, nmap, OWASP ZAP, Nikto, PowerShell, Bash</p>
+</div></section>
+<section class="cs-next"><div class="wrap">
+  <a href="blue-team-dgid.html"><span class="label">Next case study</span><b class="display">Defending a public agency and proving the attack is seen →</b></a>
+</div></section>
+<section class="contact cs-cta"><div class="wrap">
+  <h2 class="display">Interested in this profile?</h2>
+  <div class="cta"><a class="btn btn-ink" href="../../en/#contact">Contact me →</a><a class="btn btn-line" href="../../cv/Yacouba_ARAMA_CV.pdf" download data-goatcounter-click="cv-1page">Download my CV</a></div>
+</div></section>
+</main>
+<footer><div class="wrap"><span>© 2026 Yacouba Arama</span><span>Design and identity: Arama Design</span></div></footer>
+<script>
+(() => { const bar = document.getElementById('progress'); const f = () => { const h = document.documentElement, m = h.scrollHeight - h.clientHeight; bar.style.transform = `scaleX(${m>0 ? h.scrollTop/m : 0})`; }; addEventListener('scroll', f, {passive:true}); f(); })();
+</script>
+</body>
+</html>
