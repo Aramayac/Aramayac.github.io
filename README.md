@@ -4,6 +4,10 @@ Site en ligne : https://aramayac.github.io
 
 ## Ajouter une création (logo, affiche, flyer)
 
+**Le plus simple :** ouvrez https://aramayac.github.io/admin.html, connectez-vous avec votre clé GitHub (instructions sur la page), choisissez l'image et publiez.
+
+**À la main, depuis GitHub :**
+
 1. Ouvrez le dossier `designs/` sur GitHub, puis **Add file → Upload files** et déposez l'image (JPG ou PNG, idéalement moins de 1 Mo).
 2. Ouvrez `designs.json`, cliquez sur le crayon (Edit) et ajoutez une entrée en haut de la liste :
 

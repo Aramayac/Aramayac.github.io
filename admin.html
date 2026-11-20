@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Administration · Yacouba Arama</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+:root{--paper:#fff;--paper-2:#F2F2EF;--ink:#111114;--ink-2:#4B4B52;--rule:#DADAD5;--orange:#EE4E1C;--cobalt:#1F4FDE;--ok:#11804A;--err:#B3261E;
+  --f-display:"Big Shoulders Display","Arial Narrow",Arial,sans-serif;--f-body:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;color-scheme:light}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--paper-2);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:980px;margin:0 auto;padding:0 max(20px,env(safe-area-inset-left,0px)) 4rem}
+header{background:var(--ink);color:var(--paper)}
+header .wrap{display:flex;justify-content:space-between;align-items:center;padding-block:1rem;padding-bottom:1rem}
+header b{font-family:var(--f-display);font-weight:900;font-size:1.5rem;text-transform:uppercase}
+header a{color:var(--paper);font-size:.9rem}
+h1{font-family:var(--f-display);font-weight:900;font-size:clamp(2.6rem,7vw,4.2rem);text-transform:uppercase;line-height:.92;margin:2.4rem 0 .6rem}
+.sub{color:var(--ink-2);max-width:60ch;margin:0 0 2rem}
+.panel{background:var(--paper);border:2px solid var(--ink);padding:1.4rem;margin-bottom:1.4rem}
+.panel h2{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin:0 0 1rem}
+label{display:grid;gap:.35rem;font-size:.8rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;min-width:0}
+input,select{font:inherit;font-size:.98rem;padding:.65rem .75rem;border:1.5px solid var(--ink);background:var(--paper);text-transform:none;letter-spacing:0;font-weight:400;width:100%;min-width:0}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
+.full{grid-column:1/-1}
+@media (max-width:700px){.grid{grid-template-columns:1fr 1fr}}
+.row{display:flex;flex-wrap:wrap;gap:.7rem;align-items:center;margin-top:1rem}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.8rem 1.15rem;font:inherit;font-weight:600;border:2px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--orange);border-color:var(--orange)}
+.btn.line{background:transparent;color:var(--ink)}
+.btn.line:hover{background:var(--ink);color:var(--paper)}
+.btn:disabled{opacity:.5;cursor:wait}
+.msg{font-size:.92rem;color:var(--ink-2)}
+.msg.ok{color:var(--ok)}.msg.err{color:var(--err)}
+.check{display:flex;align-items:center;gap:.5rem;text-transform:none;letter-spacing:0;font-weight:500;font-size:.92rem}
+.check input{width:auto}
+.preview{display:grid;grid-template-columns:120px minmax(0,1fr);gap:1rem;align-items:center;margin-top:1rem}
+.preview img{width:120px;height:120px;object-fit:contain;background:var(--paper-2);border:1px solid var(--rule)}
+.list{display:grid;gap:.6rem}
+.it{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:1rem;align-items:center;padding:.6rem;border:1px solid var(--rule);background:var(--paper)}
+.it img{width:72px;height:72px;object-fit:contain;background:var(--paper-2)}
+.it b{display:block}
+.it span{font-size:.88rem;color:var(--ink-2)}
+.it .acts{display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end}
+.small{padding:.45rem .7rem;font-size:.85rem}
+.del.sure{background:var(--err);border-color:var(--err);color:#fff}
+details{margin-top:.8rem}
+summary{cursor:pointer;font-weight:600}
+ol{padding-left:1.2rem;margin:.6rem 0 0}
+ol li{margin:.3rem 0;color:var(--ink-2)}
+code{background:var(--paper-2);padding:.1rem .35rem;font-size:.9em}
+:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px}
+</style>
+</head>
+<body>
+<header><div class="wrap"><b>Administration</b><a href="./">← Voir le site</a></div></header>
+<main class="wrap">
+  <h1>Ajouter une création</h1>
+  <p class="sub">Cette page publie vos logos, affiches et flyers directement dans la galerie Design du portfolio. Elle ne fonctionne qu'avec votre clé GitHub personnelle : un visiteur qui tombe dessus ne peut rien modifier.</p>
+
+  <section class="panel" id="p-login">
+    <h2>1 · Connexion</h2>
+    <label for="token">Clé d'accès GitHub (fine-grained token)</label>
+    <input id="token" type="password" autocomplete="off" placeholder="github_pat_…">
+    <div class="row">
+      <label class="check" for="remember"><input id="remember" type="checkbox" checked> Se souvenir sur cet appareil</label>
+      <button class="btn" id="login" type="button">Se connecter</button>
+      <span class="msg" id="login-msg" role="status"></span>
+    </div>
+    <details>
+      <summary>Comment obtenir cette clé (une seule fois, 2 minutes)</summary>
+      <ol>
+        <li>Ouvrez <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a>.</li>
+        <li>Nom : <code>Portfolio admin</code>. Expiration : 1 an.</li>
+        <li><b>Repository access</b> : « Only select repositories », puis choisissez <code>Aramayac.github.io</code>.</li>
+        <li><b>Permissions → Repository permissions → Contents</b> : « Read and write ».</li>
+        <li>Cliquez sur <b>Generate token</b>, copiez la clé et collez-la ci-dessus.</li>
+      </ol>
+      <p class="msg" style="margin-top:.6rem">Cette clé ne donne accès qu'au dépôt du portfolio. Ne la partagez avec personne. Si vous la perdez, supprimez-la sur GitHub et créez-en une nouvelle.</p>
+    </details>
+  </section>
+
+  <section class="panel" id="p-add" hidden>
+    <h2>2 · Nouvelle création</h2>
+    <form id="form" class="grid">
+      <label class="full" for="file">Image (PNG, JPG, WebP ou SVG)<input id="file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" required></label>
+      <label for="title">Titre<input id="title" type="text" maxlength="80" required placeholder="Affiche Nuit du Mali"></label>
+      <label for="cat">Catégorie<select id="cat"><option>Logo</option><option>Affiche</option><option>Flyer</option><option>Identité visuelle</option><option>Autre</option></select></label>
+      <label for="client">Client<input id="client" type="text" maxlength="60" placeholder="Facultatif"></label>
+      <label for="year">Année<input id="year" type="text" maxlength="4" inputmode="numeric" placeholder="2026"></label>
+      <div class="full preview" id="preview" hidden><img id="pv-img" alt="Aperçu"><span class="msg" id="pv-info"></span></div>
+      <div class="full row" style="margin-top:0">
+        <button class="btn" id="publish" type="submit">Publier sur le portfolio</button>
+        <span class="msg" id="add-msg" role="status"></span>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel" id="p-list" hidden>
+    <h2>3 · Créations en ligne</h2>
+    <div class="list" id="list"></div>
+    <div class="row"><button class="btn line small" id="logout" type="button">Se déconnecter de cet appareil</button></div>
+  </section>
+</main>
+
+<script>
+(() => {
+const OWNER='Aramayac', REPO='Aramayac.github.io', BRANCH='main', API=`https://api.github.com/repos/${OWNER}/${REPO}/contents/`;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let token = '', designs = [], jsonSha = '', busy = false;
+try { token = localStorage.getItem('ya-admin-token') || ''; } catch(e){}
+
+const say = (el, text, cls='') => { el.textContent = text; el.className = 'msg ' + cls; };
+const enc = new TextEncoder(), dec = new TextDecoder();
+const toB64 = bytes => { let s=''; for (let i=0;i<bytes.length;i+=0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i,i+0x8000)); return btoa(s); };
+const fromB64 = b => { const bin = atob(b.replace(/\n/g,'')); const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return u; };
+
+async function gh(path, opts={}){
+  const r = await fetch(API + path + (opts.method ? '' : `?ref=${BRANCH}&t=${Date.now()}`), {
+    ...opts, headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',...(opts.body?{'Content-Type':'application/json'}:{})}
+  });
+  if (!r.ok){ const e = new Error('http'); e.status = r.status; try { e.detail = (await r.json()).message; } catch(_){} throw e; }
+  return r.status === 204 ? null : r.json();
+}
+function explain(err){
+  if (err.status === 401) return 'Clé refusée : vérifiez qu\'elle est complète et qu\'elle n\'a pas expiré.';
+  if (err.status === 403 || err.status === 404) return 'Cette clé n\'a pas accès au dépôt Aramayac.github.io en écriture (permission Contents : Read and write).';
+  if (err.status === 409) return 'Le dépôt a changé entre-temps. Rechargez la page puis réessayez.';
+  if (err.status === 422) return 'GitHub a refusé le fichier (nom ou taille). Essayez une image plus légère.';
+  if (!err.status) return 'Pas de connexion à GitHub. Vérifiez Internet et réessayez.';
+  return 'Erreur GitHub (' + err.status + ').';
+}
+
+async function load(){
+  const f = await gh('designs.json');
+  jsonSha = f.sha;
+  try { designs = JSON.parse(dec.decode(fromB64(f.content))); } catch(e){ designs = []; }
+  if (!Array.isArray(designs)) designs = [];
+  renderList();
+}
+function renderList(){
+  $('#list').innerHTML = designs.length ? designs.map((d,i)=>`<div class="it">
+    <img src="${esc(d.image)}?v=${Date.now()}" alt="">
+    <div><b>${esc(d.title)}</b><span>${esc([d.cat,d.client,d.year].filter(Boolean).join(' · '))}</span></div>
+    <div class="acts">
+      ${i>0?`<button class="btn line small up" type="button" data-i="${i}" aria-label="Monter ${esc(d.title)}">↑</button>`:''}
+      <button class="btn line small del" type="button" data-i="${i}">Retirer</button>
+    </div></div>`).join('') : '<p class="msg">Aucune création pour le moment.</p>';
+}
+async function saveJson(next, message){
+  const body = JSON.stringify(next, null, 2) + '\n';
+  const r = await gh('designs.json', {method:'PUT', body: JSON.stringify({message, content: toB64(enc.encode(body)), sha: jsonSha, branch: BRANCH})});
+  jsonSha = r.content.sha; designs = next; renderList();
+}
+
+$('#login').addEventListener('click', async () => {
+  const m = $('#login-msg'); token = $('#token').value.trim() || token;
+  if (!token){ say(m,'Collez votre clé GitHub.','err'); return; }
+  say(m,'Connexion…');
+  try {
+    await load();
+    try { if ($('#remember').checked) localStorage.setItem('ya-admin-token', token); else localStorage.removeItem('ya-admin-token'); } catch(e){}
+    say(m,'Connecté.','ok'); $('#p-add').hidden = false; $('#p-list').hidden = false; $('#token').value='';
+  } catch(err){ say(m, explain(err), 'err'); }
+});
+$('#logout').addEventListener('click', () => { try { localStorage.removeItem('ya-admin-token'); } catch(e){} token=''; location.reload(); });
+
+/* image preparation: keep SVG as-is, shrink big rasters */
+async function prepare(file){
+  if (file.type === 'image/svg+xml') return {blob:file, ext:'svg'};
+  const bmp = await createImageBitmap(file);
+  const k = Math.min(1, 1800 / Math.max(bmp.width, bmp.height));
+  const keepPng = file.type === 'image/png';
+  if (k === 1 && file.size < 900e3) return {blob:file, ext: keepPng?'png':(file.type==='image/webp'?'webp':'jpg')};
+  const c = document.createElement('canvas'); c.width = Math.round(bmp.width*k); c.height = Math.round(bmp.height*k);
+  c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+  const type = keepPng ? 'image/png' : 'image/jpeg';
+  const blob = await new Promise(r => c.toBlob(r, type, .86));
+  return {blob, ext: keepPng ? 'png' : 'jpg'};
+}
+const slug = t => t.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,50) || 'creation';
+
+$('#file').addEventListener('change', () => {
+  const f = $('#file').files[0]; if (!f){ $('#preview').hidden = true; return; }
+  $('#pv-img').src = URL.createObjectURL(f); $('#pv-info').textContent = `${f.name} · ${(f.size/1024/1024).toFixed(2)} Mo`; $('#preview').hidden = false;
+  if (!$('#title').value) $('#title').value = f.name.replace(/\.[^.]+$/,'').replace(/[-_]+/g,' ');
+});
+
+$('#form').addEventListener('submit', async e => {
+  e.preventDefault(); if (busy) return;
+  const m = $('#add-msg'), f = $('#file').files[0], title = $('#title').value.trim();
+  if (!f || !title){ say(m,'Choisissez une image et donnez-lui un titre.','err'); return; }
+  busy = true; $('#publish').disabled = true;
+  try {
+    say(m,'Préparation de l\'image…');
+    const {blob, ext} = await prepare(f);
+    if (blob.size > 20e6) throw Object.assign(new Error(), {status:422});
+    const path = `designs/${slug(title)}-${Date.now().toString(36)}.${ext}`;
+    say(m,'Envoi de l\'image…');
+    await gh(path, {method:'PUT', body: JSON.stringify({message:`Design : ajout de « ${title} »`, content: toB64(new Uint8Array(await blob.arrayBuffer())), branch: BRANCH})});
+    say(m,'Mise à jour de la galerie…');
+    await load();
+    const item = {image:path, title, cat:$('#cat').value, client:$('#client').value.trim(), year:$('#year').value.trim()};
+    await saveJson([item, ...designs], `Galerie : ajout de « ${title} »`);
+    $('#form').reset(); $('#preview').hidden = true;
+    say(m,'Publié. Le site se met à jour dans 1 à 2 minutes.','ok');
+  } catch(err){ say(m, explain(err), 'err'); }
+  busy = false; $('#publish').disabled = false;
+});
+
+$('#list').addEventListener('click', async e => {
+  const b = e.target.closest('button[data-i]'); if (!b || busy) return;
+  const i = +b.dataset.i, d = designs[i];
+  if (b.classList.contains('del') && !b.classList.contains('sure')){
+    b.classList.add('sure'); b.textContent = 'Confirmer'; setTimeout(()=>{ if (b.isConnected){ b.classList.remove('sure'); b.textContent='Retirer'; } }, 4000); return;
+  }
+  busy = true; b.disabled = true;
+  try {
+    await load();
+    const idx = designs.findIndex(x => x.image === d.image); if (idx < 0) { busy=false; return; }
+    if (b.classList.contains('up')){
+      const next = designs.slice(); [next[idx-1], next[idx]] = [next[idx], next[idx-1]];
+      await saveJson(next, `Galerie : « ${d.title} » remonté`);
+    } else {
+      await saveJson(designs.filter((_,k)=>k!==idx), `Galerie : retrait de « ${d.title} »`);
+      try { const meta = await gh(d.image); await gh(d.image, {method:'DELETE', body: JSON.stringify({message:`Design : suppression du fichier « ${d.title} »`, sha: meta.sha, branch: BRANCH})}); } catch(_){}
+    }
+  } catch(err){ alertMsg(explain(err)); }
+  busy = false;
+});
+function alertMsg(t){ say($('#add-msg'), t, 'err'); }
+
+/* auto-login with a remembered key */
+if (token){ $('#token').placeholder = 'Clé enregistrée sur cet appareil'; $('#login').click(); }
+})();
+</script>
+</body>
+</html>
